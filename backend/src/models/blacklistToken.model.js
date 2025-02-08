@@ -9,11 +9,6 @@ const BlackListtokenSchema = new Schema(
             required: true,
             unique: true
         },
-        user: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
-        },
         expiration: {
             type: Date,
             required: true

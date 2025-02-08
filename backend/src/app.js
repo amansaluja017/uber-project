@@ -20,10 +20,10 @@ app.use(cookieParser());
 
 
 import userRoutes from './routes/user.routes.js';
-import captionRoutes from './routes/caption.routes.js';
+import captianRoutes from './routes/captian.routes.js';
 
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/caption', captionRoutes);
+app.use('/api/v1/captian', captianRoutes);
 
 
 export {app};

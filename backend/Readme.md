@@ -216,12 +216,12 @@ Returned when there is no valid JWT token provided or if the token is invalid.
 - #### 500 Internal Server Error
 Indicates an unexpected server error during logout.
 
-# Caption Registration API Endpoint Documentation
+# captian Registration API Endpoint Documentation
 
-## Endpoint: `/caption/register`
+## Endpoint: `/captian/register`
 
 ### Description
-The `/caption/register` endpoint is used to create a new caption record in the system. It registers a new caption with the provided details including user information and vehicle details.
+The `/captian/register` endpoint is used to create a new captian record in the system. It registers a new captian with the provided details including user information and vehicle details.
 
 ### HTTP Method
 `POST`
@@ -230,10 +230,10 @@ The `/caption/register` endpoint is used to create a new caption record in the s
 The request should be in JSON format containing the following properties:
 
 - **firstName** (string, required):  
-  The first name of the caption owner. Cannot be empty.
+  The first name of the captian owner. Cannot be empty.
 
 - **lastName** (string, optional):  
-  The last name of the caption owner.
+  The last name of the captian owner.
 
 - **email** (string, required):  
   A valid email address.
@@ -260,7 +260,7 @@ The request should be in JSON format containing the following properties:
     The longitude value.
 
 - **status** (string, required):  
-  The current status of the caption (e.g., "active" or "inactive").
+  The current status of the captian (e.g., "active" or "inactive").
 
 #### Example Request
 ```json
@@ -291,7 +291,7 @@ On success, the endpoint returns a JSON response with status code `201 Created`.
 {
   "status": 201,
   "data": {
-    "_id": "unique_caption_id",
+    "_id": "unique_captian_id",
     "firstName": "Jane",
     "lastName": "Doe",
     "email": "jane.doe@example.com",
@@ -309,7 +309,7 @@ On success, the endpoint returns a JSON response with status code `201 Created`.
     "createdAt": "2025-02-08T12:34:56.789Z",
     "updatedAt": "2025-02-08T12:34:56.789Z"
   },
-  "message": "caption created successfully"
+  "message": "captian created successfully"
 }
 ```
 ### Error Responses
@@ -332,4 +332,119 @@ Returned when any required field is missing or if data validation fails.
 }
 ```
 - #### 500 Internal Server Error
-Indicates an unexpected server error while creating the caption.
+Indicates an unexpected server error while creating the captian.
+
+## Captian Login API Endpoint
+
+### Endpoint
+`/captian/login`
+
+### HTTP Method
+`POST`
+
+### Request Body
+The request should be in JSON format containing the following properties:
+- **email** (string, required): Must be a valid email address.
+- **password** (string, required): Password with a minimum of 8 characters.
+
+#### Example Request
+```json
+{
+    "email": "john.doe@example.com",
+    "password": "Password123!"
+}
+```
+
+#### Successful Response
+On success, the endpoint returns a JSON response with status code `200 OK`, including the captian details, an access token, and a refresh token.
+
+#### Example Successful Response
+```json
+{
+    "status": 200,
+    "data": {
+        "captian": { /* captian object */ },
+        "accessToken": "access token string",
+        "refreshToken": "refresh token string"
+    },
+    "message": "login success"
+}
+```
+#### Error Responses
+- #### 400 Bad Request:
+ Returned when required fields are missing or data validation fails.
+- #### 401 Unauthorized:
+ Returned when the provided credentials are invalid.
+- #### 500 Internal Server Error:
+ Indicates an unexpected error occurred during authentication.
+
+### Captian Profile API Endpoint
+#### Endpoint
+`/captian/captianProfile`
+
+#### HTTP Method
+`GET`
+
+#### Authentication
+This endpoint is protected by JWT authentication. A valid access token must be provided in the request header or via cookies.
+
+#### Successful Response
+On success, the endpoint returns a JSON response with status code 200 OK and the captian's profile details.
+
+#### Example Successful Response
+```json
+{
+    "status": 200,
+    "data": {
+        "_id": "unique_captian_id",
+        "firstName": "John",
+        "lastName": "Doe",
+        "email": "john.doe@example.com"
+        // additional captian fields
+    },
+    "message": "Captain profile fetched successfully"
+}
+```
+#### Error Responses
+- #### 401 Unauthorized:
+Returned when no valid JWT token is provided or if the token is invalid.
+- #### 500 Internal Server Error: Indicates an unexpected error occurred while fetching the profile.
+
+## Captian Logout API Endpoint
+### Endpoint
+`/captian/logout`
+
+### HTTP Method
+`GET`
+
+#### Authentication
+This endpoint is protected by JWT authentication. A valid access token must be provided to process the logout.
+
+#### Description
+The /captian/logout endpoint logs out the captian by:
+
+- Clearing the captian's refresh token.
+- Blacklisting the current access token to prevent further use.
+
+#### Successful Response
+On success, the endpoint returns a JSON response with status code 200 OK and the updated captian object, with the refreshToken set to `null`.
+
+#### Example Successful Response
+```json
+{
+    "status": 200,
+    "data": {
+        "_id": "unique_captian_id",
+        "firstName": "John",
+        "lastName": "Doe",
+        "email": "john.doe@example.com",
+        "refreshToken": null
+    },
+    "message": "logged out successfully"
+}
+```
+#### Error Responses
+- #### 401 Unauthorized:
+ Returned when no valid JWT token is provided or if the token is invalid.
+- #### 500 Internal Server Error:
+ Indicates an unexpected error occurred during logout.

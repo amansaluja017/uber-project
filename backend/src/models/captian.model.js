@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 const Schema = mongoose.Schema;
 
-const captionSchema = new Schema(
+const captianSchema = new Schema(
     {
         firstName: {
             type: String,
@@ -82,23 +82,25 @@ const captionSchema = new Schema(
     }, { timestamps: true }
 );
 
-captionSchema.pre('save', async function (next) {
+captianSchema.pre('save', async function (next) {
     if(!this.isModified('password')) return next();
 
     this.password = await bycypt.hash(this.password, 10)
     next();
 })
 
-captionSchema.methods.comparePassword = async function (password) {
+captianSchema.methods.comparePassword = async function (password) {
     return await bycypt.compare(password, this.password)
 }
 
-captionSchema.methods.generateRefreshToken = function () {
+captianSchema.methods.generateRefreshToken = function () {
     return jwt.sign({_id: this._id}, process.env.SECRET_REFRESH_TOKEN, { expiresIn: process.env.REFRESH_TOKEN_EXPIRY })
 }
 
-captionSchema.methods.generateAccessToken = function () {
+captianSchema.methods.generateAccessToken = function () {
     return jwt.sign({_id: this._id}, process.env.SECRET_ACCESS_TOKEN, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY })
 }
 
-export const Caption = mongoose.model('Caption', captionSchema);
+const Captian = mongoose.model('Captian', captianSchema);
+
+export {Captian};

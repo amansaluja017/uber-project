@@ -52,6 +52,11 @@ export const registerUser = asyncHandler(async (req, res) => {
 })
 
 export const loginUser = asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        throw new ApiError(400, errors.array().map(err => err.msg));
+    }
+    
     const { email, password } = req.body;
 
     if (!(email && password)) {
@@ -90,7 +95,9 @@ export const loginUser = asyncHandler(async (req, res) => {
 })
 
 export const userProfile = asyncHandler(async (req, res) => {
-    return res.status(200).json(new ApiResponse(200, req.user, "User profile fetched successfully"))
+    const user = req.user;
+    console.log(user);
+    return res.status(200).json(new ApiResponse(200, user, "User profile fetched successfully"))
 })
 
 export const logoutUser = asyncHandler(async(req, res) => {
