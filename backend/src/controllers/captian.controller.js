@@ -7,117 +7,155 @@ import { validationResult } from "express-validator";
 import { Token } from "../models/blacklistToken.model.js";
 
 export const generateAccessAndRefreshToken = async (userId) => {
+  try {
+    const captian = await Captian.findById(userId);
 
-    try {
-        const captian = await Captian.findById(userId);
+    const accessToken = await captian.generateAccessToken();
+    const refreshToken = await captian.generateRefreshToken();
 
-        const accessToken = await captian.generateAccessToken();
-        const refreshToken = await captian.generateRefreshToken();
+    captian.refreshToken = refreshToken;
+    await captian.save({ validateBeforeSave: false });
 
-        captian.refreshToken = refreshToken;
-        await captian.save({ validateBeforeSave: false });
+    return { accessToken, refreshToken };
+  } catch (error) {
+    process.exit(1);
+    throw new ApiError(
+      500,
+      "failed to generate access and refresh token",
+      error.message
+    );
+  }
+};
 
-        return { accessToken, refreshToken };
-    } catch (error) {
-        process.exit(1);
-        throw new ApiError(500, "failed to generate access and refresh token", error.message);
-    }
-}
+export const registercaptian = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ApiError(
+      400,
+      errors.array().map((err) => err.message),
+      "Invalid request"
+    );
+  }
 
-export const registercaptian = asyncHandler(async(req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        throw new ApiError(400, errors.array().map(err => err.message), "Invalid request");
-    }
+  const { firstName, lastName, email, password, vehicle, location, status } =
+    req.body;
 
-    const {firstName, lastName, email, password, vehicle, location, status} = req.body;
+  if (!firstName || !email || !password || !vehicle || !status) {
+    throw new ApiError(400, "All fields are required");
+  }
 
-    if(!firstName || !email || !password || !vehicle || !status) {
-        throw new ApiError(400, "All fields are required");
-    }
+  const existedcaptian = await Captian.findOne({ email });
 
-    const existedcaptian = await Captian.findOne({email})
+  if (existedcaptian) {
+    throw new ApiError(400, "Email already exists");
+  }
 
-    if(existedcaptian) {
-        throw new ApiError(400, "Email already exists",);
-    }
+  const captian = await createCaptian({
+    firstName,
+    lastName,
+    email,
+    password,
+    color: vehicle.color,
+    vehicleType: vehicle.vehicleType,
+    capicity: vehicle.capicity,
+    plate: vehicle.plate,
+    location,
+    status,
+  });
 
-    const captian = await createCaptian({
-        firstName,
-        lastName,
-        email,
-        password,
-        color: vehicle.color,
-        vehicleType: vehicle.vehicleType,
-        capicity: vehicle.capicity,
-        plate: vehicle.plate,
-        location,
-        status
-    })
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    captian._id
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
 
-    const {accessToken, refreshToken} = await generateAccessAndRefreshToken(captian._id)
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
+  return res
+    .status(201)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(new ApiResponse(201, captian, "captian created successfully"));
+});
 
-    return res.status(201).cookie('accessToken', accessToken, options).cookie('refreshToken', refreshToken, options).json(new ApiResponse(201, captian, "captian created successfully"))
-})
+export const logincaptian = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ApiError(
+      400,
+      errors.array().map((err) => err.message),
+      "Invalid request"
+    );
+  }
 
-export const logincaptian = asyncHandler(async(req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        throw new ApiError(400, errors.array().map(err => err.message), "Invalid request");
-    }
+  const { email, password } = req.body;
 
-    const {email, password} = req.body;
+  if (!(email && password)) {
+    throw new ApiError(400, "All fields are required");
+  }
 
-    if(!(email && password)) {
-        throw new ApiError(400, "All fields are required");
-    }
+  const captian = await Captian.findOne({ email }).select("+password");
 
-    const captian = await Captian.findOne({ email }).select('+password');
-    
-    if(!captian) {
-        throw new ApiError(401, "Invalid credentials");
-    }
+  if (!captian) {
+    throw new ApiError(401, "Invalid credentials");
+  }
 
-    const comparePassword = await captian.comparePassword(password);
+  const comparePassword = await captian.comparePassword(password);
 
-    if(!comparePassword) {
-        throw new ApiError(401, "Invalid credentials");
-    }
+  if (!comparePassword) {
+    throw new ApiError(401, "Invalid credentials");
+  }
 
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
 
-    const {accessToken, refreshToken} = await generateAccessAndRefreshToken(captian._id);
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    captian._id
+  );
 
-    return res.status(200).cookie('accessToken', accessToken, options).cookie('refreshToken', refreshToken, options).json(new ApiResponse(200, {captian, accessToken, refreshToken}, "login success"));
-})
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        { captian, accessToken, refreshToken },
+        "login success"
+      )
+    );
+});
 
 export const captainProfile = asyncHandler(async (req, res) => {
-    return res.status(200).json(new ApiResponse(200, req.captian, "Captain profile fetched successfully"))
-})
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, req.captian, "Captain profile fetched successfully")
+    );
+});
 
-export const logoutCaptian = asyncHandler(async(req, res) => {
-    const captian = await Captian.findByIdAndUpdate(
-        req.captian._id,
-        {
-            $set: {
-                refreshToken: null
-            }
-        },
-        {
-            new: true
-        }
-    )
-    console.log("captian", captian)
-    const token = req.cookies?.accessToken  || req.header('Authorization')?.replace('Bearer ', '');
+export const logoutCaptian = asyncHandler(async (req, res) => {
+  const captian = await Captian.findByIdAndUpdate(
+    req.captian._id,
+    {
+      $set: {
+        refreshToken: null,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+  console.log("captian", captian);
+  const token =
+    req.cookies?.accessToken ||
+    req.header("Authorization")?.replace("Bearer ", "");
 
-    await Token.create({token, captian: req.captian, expiration: Date.now()});
+  await Token.create({ token, captian: req.captian, expiration: Date.now() });
 
-    return res.status(200).json(new ApiResponse(200, captian, "logged out successfully"))
+  return res
+    .status(200)
+    .json(new ApiResponse(200, captian, "logged out successfully"));
 });
