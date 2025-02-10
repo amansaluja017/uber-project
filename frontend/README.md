@@ -60,3 +60,25 @@ This project is a ride-sharing application built with React, Redux, and React Ro
   - **password**: Password input (required)
 - **Navigation Options**:  
   After a successful signup, captains are redirected to the `/captian-login` page. A link is provided for captains who already have an account.
+
+### Route: `/logout`
+- **Description**:  
+  The user logout page logs out the current user. It sends a GET request to the backend at `/api/v1/users/logout` to clear the user's refresh token and blacklist the access token.  
+- **Method**: GET  
+- **Component**: `UserLogout`  
+- **Flow/Navigation**:  
+  1. User triggers logout.  
+  2. The request is sent with the stored access token in the request header.  
+  3. On success (HTTP 200), the token is removed from localStorage and the user is redirected to `/login`.
+
+---
+
+### Route: `/captian-logout`
+- **Description**:  
+  The captian logout page logs out a logged-in captian (driver). It makes a GET request to the backend at `/api/v1/captian/logout` to process logout by clearing the refresh token and blacklisting the access token.  
+- **Method**: GET  
+- **Component**: `CaptianLogout`  
+- **Flow/Navigation**:  
+  1. Captian initiates a logout action.  
+  2. A GET request is sent with the access token in the header.  
+  3. On a successful response (HTTP 200), the token is removed from localStorage and the captian is redirected to `/captian-login`.

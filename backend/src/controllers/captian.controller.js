@@ -148,7 +148,6 @@ export const logoutCaptian = asyncHandler(async (req, res) => {
       new: true,
     }
   );
-  console.log("captian", captian);
   const token =
     req.cookies?.accessToken ||
     req.header("Authorization")?.replace("Bearer ", "");

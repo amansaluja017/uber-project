@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../store/UserAuthSlice';
+import axios from 'axios';
 
 function UserSignup() {
   const {register, handleSubmit} = useForm();
@@ -12,11 +13,15 @@ function UserSignup() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
 
-  const submit = (data) => {
+  const submit = async (data) => {
     setError('')
     try {
-      dispatch(login(data))
-      navigate('/login')
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/users/register`, data);
+      if(response.status === 200) {
+        dispatch(login(data))
+        localStorage.setItem('token', response.data.data.accessToken);
+        navigate('/login')
+      }
     } catch (error) {
       setError(error.message || "Something went wrong during signup");
     }

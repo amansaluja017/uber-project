@@ -6,11 +6,14 @@ import { Provider } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { store } from './store/Store.js'
 import Weclcome from './Pages/Welcome.jsx'
-import UserLogin from './pages/UserLogin.jsx'
-import UserSignup from './pages/UserSignup.jsx'
-import CaptianLogin from './pages/CaptianLogin.jsx'
+import UserLogin from './Pages/UserLogin.jsx'
+import UserSignup from './Pages/UserSignup.jsx'
+import CaptianLogin from './Pages/CaptianLogin.jsx'
 import CaptianSignup from './Pages/CaptianSignup.jsx'
 import Home from './Pages/Home.jsx'
+import UserProtected from './components/UserProtected.jsx'
+import UserLogout from './Pages/UserLogout.jsx'
+import CaptianLogout from './Pages/CaptianLogout.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -18,11 +21,25 @@ createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Weclcome />} />
-          <Route path='/home' element={<Home />} />
+          <Route path='/home' element={
+            <UserProtected>
+              <Home />
+            </UserProtected>
+          } />
           <Route path='/login' element={<UserLogin />} />
           <Route path='/signup' element={<UserSignup />} />
+          <Route path='/logout' element={
+            <UserProtected>
+              <UserLogout />
+            </UserProtected>
+          } />
           <Route path='/captian-login' element={<CaptianLogin />} />
           <Route path='/captian-signup' element={<CaptianSignup />} />
+          <Route path='/captian-logout' element={
+            <UserProtected>
+              <CaptianLogout />
+            </UserProtected>
+          } />
         </Routes>
       </BrowserRouter>
     </Provider>

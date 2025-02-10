@@ -5,6 +5,7 @@ import {useDispatch} from 'react-redux'
 import { login } from '../store/UserAuthSlice'
 import { useNavigate } from 'react-router-dom'
 import { Input, Button } from '../components/index'
+import axios from 'axios'
 
 function UserLogin() {
   const dispatch = useDispatch();
@@ -13,11 +14,15 @@ function UserLogin() {
 
   const [error, setError] = useState('');
 
-  const submit = (data) => {
+  const submit = async (data) => {
     setError('');
     try {
-      dispatch(login(data));
-      navigate('/home');
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/users/login`, data);
+      if(response.status === 200) {
+        dispatch(login(data))
+        localStorage.setItem('token', response.data.data.accessToken);
+        navigate('/home');
+      }
     } catch (error) {
       setError(error.message || "something went wrong during login");
     }

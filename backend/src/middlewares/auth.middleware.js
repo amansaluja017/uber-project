@@ -51,7 +51,6 @@ export const verifyJWTCaptian = asyncHandler(async (req, _, next) => {
     }
 
     const tokenDecode = jwt.verify(token, process.env.SECRET_ACCESS_TOKEN);
-    console.log(tokenDecode);
 
     const captian = await Captian.findById(tokenDecode?._id).select(
       "-refreshToken"
@@ -60,11 +59,10 @@ export const verifyJWTCaptian = asyncHandler(async (req, _, next) => {
     if (!captian) {
       throw new ApiError(404, "Captian not found");
     }
-    console.log(captian);
 
     req.captian = captian;
     next();
   } catch (error) {
-    throw new ApiError(401, "unauthorized access", error);
+    throw new ApiError(401, "unauthorized access", error.message);
   }
 });
