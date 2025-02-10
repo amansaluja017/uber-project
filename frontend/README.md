@@ -30,3 +30,33 @@ This project is a ride-sharing application built with React, Redux, and React Ro
 - **Component**: `CaptianLogin`
 - **Navigation Options**:  
   Includes a link to captain registration (`/captian-signup`) if the user doesn't have an account, and a link to the user login page (`/login`).
+
+---
+
+### Route: `/signup`
+- **Description**:  
+  The user signup page allows new regular users to create an account. The page presents a form that collects the user's first name, last name, email, and password.
+- **Method**: GET (renders on browser navigation)
+- **Component**: `UserSignup`
+- **Form Details**:
+  - **firstName**: Text input (required)
+  - **lastName**: Text input (optional)
+  - **email**: Email input (required)
+  - **password**: Password input (required)
+- **Navigation Options**:  
+  Upon successful signup, users are redirected to the `/login` page. There is also a link provided for users who already have an account.
+
+---
+
+### Route: `/captian-signup`
+- **Description**:  
+  The captian signup page allows new captains (drivers) to register. This page provides a signup form where captains can enter their details including first name, last name, email, and password.
+- **Method**: GET (renders on browser navigation)
+- **Component**: `CaptianSignup`
+- **Form Details**:
+  - **firstName**: Text input (required)
+  - **lastName**: Text input (optional)
+  - **email**: Email input (required)
+  - **password**: Password input (required)
+- **Navigation Options**:  
+  After a successful signup, captains are redirected to the `/captian-login` page. A link is provided for captains who already have an account.

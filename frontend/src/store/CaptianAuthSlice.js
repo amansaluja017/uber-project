@@ -7,10 +7,10 @@ const captianslice = createSlice({
   initialState,
   reducers: {
     Captianlogin(state, action) {
-      state.userData = action.payload;
+      state.captianData = action.payload;
     },
     Captianlogout(state) {
-      state.userData = null;
+      state.captianData = null;
     },
   },
 });
