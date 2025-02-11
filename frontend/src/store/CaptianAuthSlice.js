@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { captianData: null };
+const localData = JSON.parse(localStorage.getItem("captianData")) || null;
+const localStatus = JSON.parse(localStorage.getItem("captianStatus")) || false;
+
+const initialState = { captianData: localData, status: localStatus };
 
 const captianslice = createSlice({
   name: "captian",
@@ -8,9 +11,15 @@ const captianslice = createSlice({
   reducers: {
     Captianlogin(state, action) {
       state.captianData = action.payload;
+      state.status = true;
+      localStorage.setItem("captianData", JSON.stringify(action.payload));
+      localStorage.setItem("captianStatus", true);
     },
     Captianlogout(state) {
       state.captianData = null;
+      state.status = false;
+      localStorage.removeItem("captianData");
+      localStorage.setItem("captianStatus", false);
     },
   },
 });

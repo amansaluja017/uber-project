@@ -14,6 +14,8 @@ import Home from './Pages/Home.jsx'
 import UserProtected from './components/UserProtected.jsx'
 import UserLogout from './Pages/UserLogout.jsx'
 import CaptianLogout from './Pages/CaptianLogout.jsx'
+import CaptianHome from './Pages/CaptianHome.jsx'
+import CaptianProtected from './components/CaptianProtected.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -35,6 +37,11 @@ createRoot(document.getElementById('root')).render(
           } />
           <Route path='/captian-login' element={<CaptianLogin />} />
           <Route path='/captian-signup' element={<CaptianSignup />} />
+          <Route path='/captian-home' element={
+            <CaptianProtected>
+              <CaptianHome />
+            </CaptianProtected>
+          } />
           <Route path='/captian-logout' element={
             <UserProtected>
               <CaptianLogout />

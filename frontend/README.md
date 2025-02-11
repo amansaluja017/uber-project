@@ -82,3 +82,49 @@ This project is a ride-sharing application built with React, Redux, and React Ro
   1. Captian initiates a logout action.  
   2. A GET request is sent with the access token in the header.  
   3. On a successful response (HTTP 200), the token is removed from localStorage and the captian is redirected to `/captian-login`.
+
+## Protected Routes
+
+### User Protected Routes
+
+#### `/home` Route
+- **Description:**  
+  The home route displays the main dashboard for a logged-in user. This route is protected by the `UserProtected` component, which ensures that only authenticated users can access it.
+- **Method:** GET (renders on browser navigation)
+- **Component:** `Home` wrapped with `UserProtected`
+- **Access Flow:**  
+  - If `state.user.status` is true, the user sees the Home page.
+  - If not authenticated, the user is redirected to `/login`.
+
+#### UserProtected Component
+- **Description:**  
+  Wraps user-specific routes to protect them from being accessed by unauthenticated users.  
+- **Behavior:**  
+  - Checks the value of `state.user.status` from the Redux store.
+  - If `status` is not true, it redirects the user to `/login`.
+  - It renders a loading indicator until the authentication status is determined.
+- **Usage:**  
+  Wrap any route or component that should be accessible only by logged-in users.
+
+---
+
+### Captian Protected Routes
+
+#### `/captian-home` Route
+- **Description:**  
+  The captain home route displays the dashboard for a logged-in captain. This route is protected by the `CaptianProtected` component.
+- **Method:** GET (renders on browser navigation)
+- **Component:** Intended for the captain’s home page (example: `CaptianHome`) wrapped with `CaptianProtected`
+- **Access Flow:**  
+  - If `state.captian.status` is true, the captain sees the protected page.
+  - If not authenticated, the captain is redirected to `/captian-login`.
+
+#### CaptianProtected Component
+- **Description:**  
+  Secures routes that require captain (driver) authentication.
+- **Behavior:**  
+  - Monitors `state.captian.status` from the Redux store.
+  - Redirects an unauthenticated captain to `/captian-login`.
+  - Displays a loading indicator until the captain’s authentication status is determined.
+- **Usage:**  
+  Wrap any captain-specific routes or components that require authentication.

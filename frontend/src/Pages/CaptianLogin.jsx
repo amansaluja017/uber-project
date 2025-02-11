@@ -21,7 +21,7 @@ function CaptianLogin() {
       if(response.status === 200) {
         dispatch(Captianlogin(data));
         localStorage.setItem('token', response.data.data.accessToken);
-        navigate('/home');
+        navigate('/captian-home');
       }
     } catch (error) {
       setError(error.message || "something went wrong during login");

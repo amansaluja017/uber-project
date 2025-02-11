@@ -1,22 +1,27 @@
-import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-function UserProtected({children}) {
-    const navigate = useNavigate();
-    const token = localStorage.getItem('token');
+function UserProtected({ children, authentication = true }) {
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const userStatus = useSelector(state => state.user?.status);
 
-    useEffect(() => {
-      if (!token) {
-        navigate('/login')
+  useEffect(() => {
+    if (userStatus === undefined) return;
 
-      }
-    }, [token, navigate]);
+    if (authentication && userStatus !== authentication) {
+      navigate('/login');
+    } else if (!authentication && userStatus !== authentication) {
+      navigate('/home');
+    }
 
-  return (
-    <>
-     {children}
-    </>
-  )
+    setLoading(false);
+  }, [authentication, userStatus, navigate]);
+
+  if (loading) return <h1>Loading...</h1>;
+
+  return <>{children}</>;
 }
 
-export default UserProtected
+export default UserProtected;
