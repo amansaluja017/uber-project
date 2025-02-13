@@ -74,7 +74,7 @@ function CaptianSignup() {
             
           </div>
           <div>
-            <Button>Sign up</Button>
+            <Button className='w-full'>Sign up</Button>
           </div>
         </form>
         <div className='relative bottom-6'>

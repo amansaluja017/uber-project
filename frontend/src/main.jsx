@@ -16,6 +16,8 @@ import UserLogout from './Pages/UserLogout.jsx'
 import CaptianLogout from './Pages/CaptianLogout.jsx'
 import CaptianHome from './Pages/CaptianHome.jsx'
 import CaptianProtected from './components/CaptianProtected.jsx'
+import Riding from './Pages/Riding.jsx'
+import CaptianRide from './Pages/CaptianRide.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -28,6 +30,7 @@ createRoot(document.getElementById('root')).render(
               <Home />
             </UserProtected>
           } />
+          <Route path='/riding' element={<Riding />} />
           <Route path='/login' element={<UserLogin />} />
           <Route path='/signup' element={<UserSignup />} />
           <Route path='/logout' element={
@@ -42,6 +45,7 @@ createRoot(document.getElementById('root')).render(
               <CaptianHome />
             </CaptianProtected>
           } />
+          <Route path='/captian-riding' element={<CaptianRide />} />
           <Route path='/captian-logout' element={
             <UserProtected>
               <CaptianLogout />

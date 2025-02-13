@@ -48,7 +48,7 @@ function UserSignup() {
             <Input label='Enter your Password' type='password' placeholder='Password' {...register('password', {required: true})}></Input>
           </div>
           <div>
-            <Button>Sign up</Button>
+            <Button className='w-full'>Sign up</Button>
           </div>
         </form>
         <p className='text-sm px-7'>Already have a account? <Link className='text-blue-900 text-sm' to='/login'>click here to login</Link></p>

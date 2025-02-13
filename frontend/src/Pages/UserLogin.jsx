@@ -46,7 +46,7 @@ function UserLogin() {
         </div>
 
         <div>
-          <Button>Login</Button>
+          <Button className='w-full'>Login</Button>
         </div>
       </form>
       <div>

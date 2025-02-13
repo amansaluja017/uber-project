@@ -1,24 +1,32 @@
 import React, { useState } from 'react'
-import { Input } from '../components/index'
+import {
+  Input,
+  LocationSearchPanel,
+  VehiclePanel,
+  ConfirmVehcile,
+  LookingForDriver,
+  WaitingForDriver
+} from '../components/index'
 import { useForm } from 'react-hook-form'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { useRef } from 'react'
 import 'remixicon/fonts/remixicon.css'
-import LocationSearchPanel from '../components/LocationSearchPanel'
-import VehiclePanel from '../components/VehiclePanel'
-import ConfirmVehcile from '../components/ConfirmVehcile'
 
 function Home() {
   const { register, handleSubmit } = useForm();
   const [openPanel, setOpenPanel] = useState(false);
   const [vehiclePanel, setVehiclePanel] = useState(false);
   const [confirmVehiclePanel, setconfirmVehiclePanel] = useState(false);
+  const [lookingDriverPanel, setlookingDriverPanel] = useState(false);
+  const [waitingForDriverPanel, setWaitingForDriverPanel] = useState(false);
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
   const find = useRef(null);
   const vehiclePanelRef = useRef(null);
   const confirmVehiclePanelRef = useRef(null);
+  const lookingDriverPanelRef = useRef(null);
+  const waitingForDriverPanelRef = useRef(null);
 
   const submit = () => { };
 
@@ -62,12 +70,30 @@ function Home() {
       gsap.to(confirmVehiclePanelRef.current, {
         transform: 'translateY(0)'
       })
-    }else {
+    } else {
       gsap.to(confirmVehiclePanelRef.current, {
         transform: 'translateY(100%)'
       })
     }
-  }, [openPanel, vehiclePanel, confirmVehiclePanel]);
+    if (lookingDriverPanel) {
+      gsap.to(lookingDriverPanelRef.current, {
+        transform: 'translateY(0)'
+      })
+    } else {
+      gsap.to(lookingDriverPanelRef.current, {
+        transform: 'translateY(100%)'
+      })
+    }
+    if (waitingForDriverPanel) {
+      gsap.to(waitingForDriverPanelRef.current, {
+        transform: 'translateY(0)'
+      })
+    } else {
+      gsap.to(waitingForDriverPanelRef.current, {
+        transform: 'translateY(100%)'
+      })
+    }
+  }, [openPanel, vehiclePanel, confirmVehiclePanel, lookingDriverPanel, waitingForDriverPanel]);
 
   return (
     <div className='h-screen'>
@@ -104,7 +130,19 @@ function Home() {
       <div ref={confirmVehiclePanelRef} className='h-screen bg-white flex top-[30%] translate-y-full fixed flex-col w-full p-4'>
         <h3 className='absolute top-0 text-xl font-bold py-4'>Confirm your Ride </h3>
         <h5 onClick={() => { setconfirmVehiclePanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
-        <ConfirmVehcile setconfirmVehiclePanel={setconfirmVehiclePanel} />
+        <ConfirmVehcile setconfirmVehiclePanel={setconfirmVehiclePanel} setlookingDriverPanel={setlookingDriverPanel} />
+      </div>
+
+      <div ref={lookingDriverPanelRef} className='h-screen bg-white flex top-[30%] translate-y-full fixed flex-col w-full p-4'>
+        <h3 className='absolute top-0 text-xl font-bold py-4'>Looking for a driver </h3>
+        <h5 onClick={() => { setlookingDriverPanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
+        <LookingForDriver />
+      </div>
+
+      <div ref={waitingForDriverPanelRef} className='h-screen bg-white flex top-[30%] fixed flex-col translate-y-full w-full p-4'>
+        <h3 className='absolute top-0 text-xl font-bold py-4'>Driver's details </h3>
+        <h5 onClick={() => { setWaitingForDriverPanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
+        <WaitingForDriver setWaitingForDriverPanel={setWaitingForDriverPanel} />
       </div>
     </div>
   )

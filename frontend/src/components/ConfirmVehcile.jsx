@@ -43,7 +43,7 @@ function ConfirmVehcile(props) {
             </div>
 
         </div>
-        <Button className='bg-green-600'>Confirm</Button>
+        <Button onClick={() => {props.setlookingDriverPanel(true)}} className='bg-green-600'>Confirm</Button>
     </div>
   )
 }

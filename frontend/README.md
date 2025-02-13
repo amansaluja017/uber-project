@@ -112,12 +112,18 @@ This project is a ride-sharing application built with React, Redux, and React Ro
 
 #### `/captian-home` Route
 - **Description:**  
-  The captain home route displays the dashboard for a logged-in captain. This route is protected by the `CaptianProtected` component.
-- **Method:** GET (renders on browser navigation)
-- **Component:** Intended for the captain’s home page (example: `CaptianHome`) wrapped with `CaptianProtected`
+  The captain home route displays the dashboard for a logged-in captain (driver). It is wrapped with the `CaptianProtected` component to ensure that only authenticated captains can access it.
+- **Method:**  
+  GET (renders on browser navigation)
+- **Component:**  
+  `CaptianHome`
 - **Access Flow:**  
-  - If `state.captian.status` is true, the captain sees the protected page.
+  - If the Redux store’s `state.captian.status` is true, the captain is allowed to view the homepage.
   - If not authenticated, the captain is redirected to `/captian-login`.
+- **Usage:**  
+  This route is used for accessing driver-specific data, such as ride history, earnings, and other dashboard metrics.
+
+---
 
 #### CaptianProtected Component
 - **Description:**  
@@ -128,3 +134,22 @@ This project is a ride-sharing application built with React, Redux, and React Ro
   - Displays a loading indicator until the captain’s authentication status is determined.
 - **Usage:**  
   Wrap any captain-specific routes or components that require authentication.
+
+---
+
+#### `/captian-riding` Route
+- **Description:**  
+  This route provides the in-ride interface for the captain. It displays a live map, ride details, and controls to complete a ride. The page is designed specifically for managing the ongoing ride process.
+- **Method:**  
+  GET (renders on browser navigation)
+- **Component:**  
+  `CaptianRide`
+- **Interface Features:**  
+  - **Map and Ride Details:**  
+    A map view is displayed with ride-related data (pickup location, destination, distance, etc.).
+  - **Navigation:**  
+    The page provides navigation controls (like a home button that routes back to `/captian-home` or logout).
+  - **Ride Completion:**  
+    A button allows the captain to trigger a complete ride action which opens a panel that wraps the `FinishRide` component.
+- **Usage:**  
+  This page is accessed when a captain accepts a ride. It provides drivers with the necessary UI to view route information and to conclude the ride once it is complete.
