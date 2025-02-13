@@ -14,6 +14,8 @@ function CaptianLogout() {
         console.log(response);
         if(response.status === 200) {
             localStorage.removeItem('token');
+            localStorage.removeItem('captianStatus');
+            localStorage.removeItem('captianData');
             navigate('/captian-login');
         }
     })
