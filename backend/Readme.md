@@ -448,3 +448,95 @@ On success, the endpoint returns a JSON response with status code 200 OK and the
  Returned when no valid JWT token is provided or if the token is invalid.
 - #### 500 Internal Server Error:
  Indicates an unexpected error occurred during logout.
+
+# Map API Endpoints
+
+These endpoints provide geolocation functionalities: fetching coordinates for an address, calculating route distance and duration between two points, and retrieving location suggestions based on a search input. All endpoints require a valid JWT token.
+
+---
+
+### GET `/get-coordinates/:address`
+
+- **Description:**  
+  Fetches the geographical coordinates (latitude and longitude) for the specified address using the TomTom geocoding service.
+
+- **URL Parameters:**  
+  - `address` (string, required): The address to geocode. Must be at least 3 characters.
+
+- **Authentication:**  
+  This endpoint is protected by JWT.
+
+- **Response Example (200 OK):**
+  ```json
+  {
+      "status": 200,
+      "data": {
+          "lat": 12.9716,
+          "lon": 77.5946
+      },
+      "message": "Coodinates fetched successfully"
+  }
+  ```
+- **Error Responses:**
+- ***400 Bad Request:*** Missing or invalid address.
+- ***500 Internal Server Error:*** Error in fetching coordinates.
+#### GET `/get-distance-time/:start/:end/:travelMode`
+- **Description:**
+Calculates the route between two locations and returns the distance and estimated travel time. This endpoint leverages the TomTom routing API.
+
+- **URL Parameters:**
+
+`start` (string, required): Starting location (as a coordinate or address string). Must be at least 3 characters.
+`end` (string, required): Destination location (as a coordinate or address string). Must be at least 3 characters.
+`travelMode` (string, required): The mode of travel (e.g., “driving”, “walking”, etc.). Must be at least 3 characters.
+- **Authentication:**
+This endpoint is protected by JWT.
+
+- **Response Example (200 OK):**
+```json
+{
+    "status": 200,
+    "data": {
+        "distance": "12.34 km",
+        "duration": "23.45 mins"
+    },
+    "message": "distance and duration fetched successfully"
+}
+```
+- **Error Responses:**
+
+- ***400 Bad Request:*** Missing or invalid parameters.
+- ***500 Internal Server Error:*** Error in retrieving distance and time.
+#### GET `/get-suggestions`
+- #### Description:
+Returns location suggestions based on a search input. It uses the TomTom search API.
+
+- #### Query Parameters:
+
+`input` (string, required): The search string for location suggestions.
+- #### Authentication:
+This endpoint is protected by JWT.
+
+- #### Response Example (200 OK):
+```json
+{
+    "status": 200,
+    "data": [
+        {
+            "name": "Place Name 1",
+            "lat": 12.9716,
+            "lng": 77.5946
+        },
+        {
+            "name": "Place Name 2",
+            "lat": 12.9720,
+            "lng": 77.5950
+        }
+    ],
+    "message": "Suggestions fetched successfully"
+}
+```
+- #### Error Responses:
+
+- ***400 Bad Request:*** Missing or invalid input.
+- ***500 Internal Server Error:*** Error in fetching suggestions.
