@@ -72,7 +72,7 @@ const captianSchema = new Schema(
       vehicleType: {
         type: String,
         required: true,
-        enum: ["car", "moterbike", "auto"],
+        enum: ["car", "motorbike", "auto"],
       },
     },
     location: {

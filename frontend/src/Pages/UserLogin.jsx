@@ -17,7 +17,7 @@ function UserLogin() {
   const submit = async (data) => {
     setError('');
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/users/login`, data);
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/users/login`, data, {withCredentials: true});
       if(response.status === 200) {
         dispatch(login(data))
         localStorage.setItem('token', response.data.data.accessToken);

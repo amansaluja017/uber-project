@@ -1,13 +1,16 @@
 import React from 'react'
+import {useSelector} from 'react-redux'
 
 function CaptianDetails() {
+    const captian = useSelector(state => state.captian.captianSignupData);
+
     return (
         <div>
             <div>
                 <div className='flex justify-between'>
                     <div className='flex justify-center items-center gap-2'>
                         <img className='h-10 w-10 object-contain rounded-full' src="https://img.freepik.com/free-vector/smiling-young-man-illustration_1308-174669.jpg" alt="avatar" />
-                        <h3 className='font-semibold'>Driver's name</h3>
+                        <h3 className='font-semibold'>{`${captian.firstName} ${captian.lastName}`}</h3>
                     </div>
 
                     <div className='text-start'>

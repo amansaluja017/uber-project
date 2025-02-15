@@ -1,6 +1,6 @@
 import React from 'react'
 
-function LookingForDriver() {
+function LookingForDriver(props) {
 
     return (
         <div>
@@ -14,8 +14,8 @@ function LookingForDriver() {
                         <i className="ri-map-pin-fill"></i>
                     </div>
                     <div className='ml-3'>
-                        <h3 className='font-semibold text-xl'>562/11-A</h3>
-                        <p className='text-sm'>Lorem ipsum dolor sit amet, consectetur</p>
+                        <h3 className='font-semibold text-xl'>Pickup</h3>
+                        <p className='text-sm'>{props.start.name}</p>
                     </div>
                 </div>
                 <div className='h-[1px] absolute  bg-gray-200 w-full'></div>
@@ -25,8 +25,8 @@ function LookingForDriver() {
                         <i className="ri-map-pin-3-fill"></i>
                     </div>
                     <div className='ml-3'>
-                        <h3 className='font-semibold text-xl'>Third Wave Coffee</h3>
-                        <p className='text-sm'>Lorem ipsum dolor sit amet, consectetur</p>
+                        <h3 className='font-semibold text-xl'>Destination</h3>
+                        <p className='text-sm'>{props.end.name}</p>
                     </div>
                 </div>
                 <div className='h-[1px] absolute  bg-gray-200 w-full'></div>
@@ -36,7 +36,7 @@ function LookingForDriver() {
                         <i className="ri-cash-line"></i>
                     </div>
                     <div className='ml-3'>
-                        <h3 className='font-semibold text-xl'>₹193.20</h3>
+                        <h3 className='font-semibold text-xl'>₹{props.fare[props.vehicleType]}</h3>
                         <p className='text-sm'>Cash Cash</p>
                     </div>
                 </div>

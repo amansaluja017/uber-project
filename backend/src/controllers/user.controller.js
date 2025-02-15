@@ -88,15 +88,10 @@ export const loginUser = asyncHandler(async (req, res) => {
     user._id
   );
 
-  const Options = {
-    httpOnly: true,
-    secure: true,
-  };
-
   return res
     .status(200)
-    .cookie("accessToken", accessToken, Options)
-    .cookie("refreshToken", refreshToken, Options)
+    .cookie("accessToken", accessToken)
+    .cookie("refreshToken", refreshToken)
     .json(
       new ApiResponse(
         200,
@@ -108,11 +103,11 @@ export const loginUser = asyncHandler(async (req, res) => {
         "Logged in successfully"
       )
     );
+    
 });
 
 export const userProfile = asyncHandler(async (req, res) => {
   const user = req.user;
-  console.log(user);
   return res
     .status(200)
     .json(new ApiResponse(200, user, "User profile fetched successfully"));

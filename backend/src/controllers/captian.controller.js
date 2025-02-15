@@ -18,7 +18,6 @@ export const generateAccessAndRefreshToken = async (userId) => {
 
     return { accessToken, refreshToken };
   } catch (error) {
-    process.exit(1);
     throw new ApiError(
       500,
       "failed to generate access and refresh token",
@@ -66,16 +65,12 @@ export const registercaptian = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     captian._id
   );
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
 
   return res
     .status(201)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(201, captian, "captian created successfully"));
+    .cookie("accessToken", accessToken)
+    .cookie("refreshToken", refreshToken)
+    .json(new ApiResponse(201, {captian, accessToken, refreshToken}, "captian created successfully"));
 });
 
 export const logincaptian = asyncHandler(async (req, res) => {

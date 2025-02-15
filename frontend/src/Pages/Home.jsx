@@ -5,13 +5,15 @@ import {
   VehiclePanel,
   ConfirmVehcile,
   LookingForDriver,
-  WaitingForDriver
+  WaitingForDriver,
+  Button
 } from '../components/index'
 import { useForm } from 'react-hook-form'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { useRef } from 'react'
 import 'remixicon/fonts/remixicon.css'
+import axios from 'axios'
 
 function Home() {
   const { register, handleSubmit } = useForm();
@@ -20,6 +22,13 @@ function Home() {
   const [confirmVehiclePanel, setconfirmVehiclePanel] = useState(false);
   const [lookingDriverPanel, setlookingDriverPanel] = useState(false);
   const [waitingForDriverPanel, setWaitingForDriverPanel] = useState(false);
+  const [startLocation, setStartLocation] = useState([]);
+  const [endLocation, setEndLocation] = useState([]);
+  const [start, setStart] = useState('');
+  const [end, setEnd] = useState('');
+  const [activeField, setActiveField] = useState(null);
+  const [fare, setFare] = useState('');
+  const [vehicleType, setVehicleType] = useState(null);
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
   const find = useRef(null);
@@ -28,7 +37,74 @@ function Home() {
   const lookingDriverPanelRef = useRef(null);
   const waitingForDriverPanelRef = useRef(null);
 
+  const startRegister = register('start');
+  const endRegister = register('end');
+
+  const handlePickup = async (e) => {
+    const value = e.target.value;
+    setStart(value);
+
+    if (value.trim().length < 3) {
+      setStartLocation([]);
+      return;
+    }
+
+    try {
+      const { data } = await axios.get('http://localhost:3000/api/v1/maps/get-suggestions', {
+        params: { input: value }
+      });
+  
+      setStartLocation(data.data);
+    } catch (error) {
+      console.error("Error fetching pickup suggestions:", error);
+      setStartLocation([]);
+    }
+  };
+
+  const handleDestination = async (e) => {
+    const value = e.target.value;
+    setEnd(value);
+
+    if (value.trim().length < 3) {
+      setEndLocation([]);
+      return;
+    }
+
+    try {
+      const { data } = await axios.get('http://localhost:3000/api/v1/maps/get-suggestions', {
+        params: { input: value }
+      });
+      
+      setEndLocation((data.data && Array.isArray(data.data)) ? data.data : data);
+    } catch (error) {
+      console.error("Error fetching destination suggestions:", error);
+      setEndLocation([]);
+    }
+  };
+
   const submit = () => { };
+
+  const findTrip = async () => {
+    setVehiclePanel(true);
+    setOpenPanel(false);
+
+    const response = await axios.get('http://localhost:3000/api/v1/rides/get-price' , {
+      params: {
+        start: `${start.lat},${start.lng}`,
+        end: `${end.lat},${end.lng}`,
+      }
+    })
+    setFare(response.data.data);
+  }
+  
+  async function createRide() {
+    const response = await axios.post('http://localhost:3000/api/v1/rides/create', {
+      start: `${start.lat},${start.lng}`,
+      end: `${end.lat},${end.lng}`,
+      vehicleType
+    }, {withCredentials: true})
+    console.log(response)
+  }
 
   useGSAP(() => {
     if (openPanel) {
@@ -97,46 +173,62 @@ function Home() {
 
   return (
     <div className='h-screen'>
+
       <div className='absolute'>
         <img className='w-[4rem] h-[4rem]' src="https://brandlogos.net/wp-content/uploads/2021/12/uber-brandlogo.net_.png" alt="logo" />
       </div>
+
       <div className='h-full'>
         <img className='h-full object-cover' src="https://storage.googleapis.com/support-forums-api/attachment/thread-146048858-12639125651610213305.PNG" alt="map" />
       </div>
+
       <div>
         <div className='flex flex-col justify-end absolute top-0 h-screen'>
-          <div className='h-[30%] p-5 bg-white'>
+          <div className='h-[30%] p-3 bg-white'>
             <h5 className='text-2xl' onClick={() => { setOpenPanel(false) }}>
               <i ref={panelCloseRef} className="ri-arrow-down-wide-line"></i>
             </h5>
             <h3 ref={find} className='text-xl font-bold'>Find a trip</h3>
             <form onSubmit={handleSubmit(submit)} className='relative'>
-              <div className='h-13 absolute w-[1.5px] bg-black top-[30%] left-[4%] rounded-full'></div>
-              <Input onClick={() => { setOpenPanel(true) }} type='text' placeholder='Add a pick up location' classNmae='h-9 px-7 mt-3 w-full' {...register('pickup')}></Input>
-              <Input onClick={() => { setOpenPanel(true) }} type='text' placeholder='Enter your destination' classNmae='h-9 mt-4 w-full px-7 ' {...register('destination')}></Input>
+              <div className='h-13 absolute w-[.78%] bg-black top-[30%] left-[4%] rounded-full'></div>
+              <Input
+               onChange={(e) => {
+                handlePickup(e);
+                startRegister.onChange(e);
+               }} onClick={() => { setOpenPanel(true), setActiveField('start') }} type='text' placeholder='Add a pick up location' className='h-9 px-7 mt-3 w-full' value={start.name} ref={startRegister.ref}></Input>
+              <Input
+               onChange={(e) => {
+                handleDestination(e);
+                endRegister.onChange(e);
+               }} onClick={() => { setOpenPanel(true), setActiveField('end') }} type='text' placeholder='Enter your destination' className='h-9 mt-4 w-full px-7 ' value={end.name} ref={endRegister.ref}></Input>
             </form>
+
+            <Button onClick={() => {findTrip()}} className='w-full'>Find Trip</Button>
+
           </div>
-          <div ref={panelRef} className='h-[70%] bg-white'>
-            <LocationSearchPanel setOpenPanel={setOpenPanel} setVehiclePanel={setVehiclePanel} />
+          <div ref={panelRef} className='bg-white h-[70%] p-6'>
+            <LocationSearchPanel
+              suggestions={activeField === 'start' ? startLocation : endLocation} setOpenPanel={setOpenPanel} setVehiclePanel={setVehiclePanel} setStart={setStart} setEnd={setEnd} activeField={activeField} />
           </div>
         </div>
       </div>
+
       <div ref={vehiclePanelRef} className='h-screen bg-white flex top-[30%] translate-y-full fixed flex-col w-full p-4'>
         <h3 className='absolute top-0 text-xl font-bold py-4'>Choose a Vehicle </h3>
         <h5 onClick={() => { setVehiclePanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
-        <VehiclePanel setconfirmVehiclePanel={setconfirmVehiclePanel} />
+        <VehiclePanel setconfirmVehiclePanel={setconfirmVehiclePanel} fare={fare} selectVehicle={setVehicleType} />
       </div>
 
       <div ref={confirmVehiclePanelRef} className='h-screen bg-white flex top-[30%] translate-y-full fixed flex-col w-full p-4'>
         <h3 className='absolute top-0 text-xl font-bold py-4'>Confirm your Ride </h3>
         <h5 onClick={() => { setconfirmVehiclePanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
-        <ConfirmVehcile setconfirmVehiclePanel={setconfirmVehiclePanel} setlookingDriverPanel={setlookingDriverPanel} />
+        <ConfirmVehcile vehicleType={vehicleType} start={start} end={end} fare={fare} createRide={createRide} setconfirmVehiclePanel={setconfirmVehiclePanel} setlookingDriverPanel={setlookingDriverPanel} />
       </div>
 
       <div ref={lookingDriverPanelRef} className='h-screen bg-white flex top-[30%] translate-y-full fixed flex-col w-full p-4'>
         <h3 className='absolute top-0 text-xl font-bold py-4'>Looking for a driver </h3>
         <h5 onClick={() => { setlookingDriverPanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
-        <LookingForDriver />
+        <LookingForDriver vehicleType={vehicleType} start={start} end={end} fare={fare} />
       </div>
 
       <div ref={waitingForDriverPanelRef} className='h-screen bg-white flex top-[30%] fixed flex-col translate-y-full w-full p-4'>
@@ -144,6 +236,7 @@ function Home() {
         <h5 onClick={() => { setWaitingForDriverPanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
         <WaitingForDriver setWaitingForDriverPanel={setWaitingForDriverPanel} />
       </div>
+
     </div>
   )
 }

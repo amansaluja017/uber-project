@@ -8,12 +8,12 @@ router.route('/get-coordinates/:address').get(verifyJWT, getCoodinates,
     query('address').isString().isLength({min: 3})
 )
 
-router.route('/get-distance-time/:start/:end/:travelMode').get(verifyJWT, getDistanceTime, 
+router.route('/get-distance-time/:start/:end').get(verifyJWT, getDistanceTime, 
     query('start').isString().isLength({min: 3}),
     query('end').isString().isLength({min: 3}),
     query('travelMode').isString().isLength({min: 3})
 )
 
-router.route('/get-suggestions').get(verifyJWT, getSuggestions)
+router.route('/get-suggestions').get(getSuggestions)
 
 export default router;

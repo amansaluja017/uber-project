@@ -480,7 +480,7 @@ These endpoints provide geolocation functionalities: fetching coordinates for an
 - **Error Responses:**
 - ***400 Bad Request:*** Missing or invalid address.
 - ***500 Internal Server Error:*** Error in fetching coordinates.
-#### GET `/get-distance-time/:start/:end/:travelMode`
+#### GET `/get-distance-time/:start/:end`
 - **Description:**
 Calculates the route between two locations and returns the distance and estimated travel time. This endpoint leverages the TomTom routing API.
 
@@ -488,7 +488,6 @@ Calculates the route between two locations and returns the distance and estimate
 
 `start` (string, required): Starting location (as a coordinate or address string). Must be at least 3 characters.
 `end` (string, required): Destination location (as a coordinate or address string). Must be at least 3 characters.
-`travelMode` (string, required): The mode of travel (e.g., “driving”, “walking”, etc.). Must be at least 3 characters.
 - **Authentication:**
 This endpoint is protected by JWT.
 
@@ -540,3 +539,84 @@ This endpoint is protected by JWT.
 
 - ***400 Bad Request:*** Missing or invalid input.
 - ***500 Internal Server Error:*** Error in fetching suggestions.
+## Ride API Endpoints
+
+These endpoints allow users to create new rides and retrieve ride fare estimates. All endpoints are protected by JWT authentication where indicated.
+
+---
+
+### POST `/api/v1/rides/create`
+
+- **Description:**  
+  Creates a new ride using the provided pickup location, destination, and vehicle type. The endpoint calculates the ride fare based on distance and duration using the TomTom routing API.
+
+- **Authentication:**  
+  This endpoint is protected by JWT. A valid token must be provided in the request header or cookies.
+
+- **Request Body:**  
+  The request should be in JSON format:
+  ```json
+  {
+      "start": "Pickup address or coordinate string",
+      "end": "Destination address or coordinate string",
+      "vehicleType": "auto | car | motorbike"
+  }
+  ```
+ - #### Response Example (201 Created):
+ ```json
+ {
+    "status": 201,
+    "data": {
+        "_id": "unique_ride_id",
+        "user": "user_id",
+        "start": "Pickup address or coordinates",
+        "end": "Destination address or coordinates",
+        "fare": 123.45,
+        "distance": "12.34",    // calculated distance in km
+        "duration": "23.45",    // calculated duration in minutes
+        "otp": "123456",
+        "createdAt": "2025-02-08T12:34:56.789Z"
+    },
+    "message": "ride created successfully"
+}
+```
+- #### Error Responses:
+
+- #### 400 Bad Request:
+Returned when required fields are missing or data validation fails.
+- #### 401 Unauthorized:
+Returned when the JWT token is missing or invalid.
+- #### 500 Internal Server Error:
+Indicates an error occurred while creating the ride or calculating fare.
+
+### GET `/api/v1/rides/get-price`
+- #### Description:
+Retrieves the fare estimate for a ride based on the provided pickup and destination coordinates. The fare is calculated with predefined base fares, per kilometer rates, and per minute rates for different vehicle types.
+
+- #### Authentication:
+Although not explicitly protected by JWT in the route definition, ensure proper access as per your application requirements.
+
+- #### Query Parameters:
+
+`start` (string, required):
+The starting location (address or coordinate). Must be at least 1 character.
+`end` (string, required):
+The destination location. Must be at least 3 characters.
+- #### Response Example (200 OK):
+```json
+{
+    "status": 200,
+    "data": {
+        "auto": 45.67,
+        "car": 78.90,
+        "motorbike": 34.56
+    },
+    "message": "fare fetched successfully"
+}
+```
+- #### Error Responses:
+
+- #### 400 Bad Request:
+Returned when required query parameters are missing or invalid.
+- #### 500 Internal Server Error:
+Indicates an error occurred while calculating the fare.

@@ -1,14 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const localData = JSON.parse(localStorage.getItem("captianData")) || null;
+const localCaptianSignupData = JSON.parse(localStorage.getItem("captianSignupData")) || null;
 const localStatus = JSON.parse(localStorage.getItem("captianStatus")) || false;
 
-const initialState = { captianData: localData, status: localStatus };
+const initialState = { captianSignupData: localCaptianSignupData, captianData: localData, status: localStatus };
 
 const captianslice = createSlice({
   name: "captian",
   initialState,
   reducers: {
+    Captiansignup(state, action) {
+      state.captianSignupData = action.payload;
+      state.status = false;
+      localStorage.setItem("captianSignupData", JSON.stringify(action.payload));
+      localStorage.setItem("captianStatus", false);
+    },
     Captianlogin(state, action) {
       state.captianData = action.payload;
       state.status = true;
@@ -24,6 +31,6 @@ const captianslice = createSlice({
   },
 });
 
-export const { Captianlogin, Captianlogout } = captianslice.actions;
+export const { Captianlogin, Captianlogout, Captiansignup } = captianslice.actions;
 
 export default captianslice.reducer;

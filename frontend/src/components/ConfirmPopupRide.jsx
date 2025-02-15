@@ -55,7 +55,7 @@ function ConfirmPopupRide(props) {
             </div>
             <form onSubmit={handleSubmit(submit)}>
                 <div>
-                    <Input type='number' classNmae='w-full py-2 px-5' placeholder='Enter OTP' {...register('otp', {required: true})} />
+                    <Input type='number' className='w-full py-2 px-5' placeholder='Enter OTP' {...register('otp', {required: true})} />
                     <Link to='/captian-riding' className='bg-green-700 mt-8 text-white w-full py-2 rounded flex items-center justify-center'>Confirm</Link>
                     <Button onClick={() => { props.setConfirmRidePopupPanel(false) }} className='bg-red-700 mt-[2%] w-full'>Cancel</Button>
                 </div>

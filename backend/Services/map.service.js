@@ -21,22 +21,22 @@ const getAddressCoordinates = async (address) => {
     }
 };
 
-export const getDistanceAndTime = async(start, end, travelMode) => {
+export const getDistanceAndTime = async(start, end) => {
 
     const apikey = process.env.TOMTOM_API_KEY
 
     try {
         const response = await axios.get(`https://api.tomtom.com/routing/1/calculateRoute/${encodeURIComponent(start)}:${encodeURIComponent(end)}/json`, {
             params: {
-                key: apikey,
-                travelMode,
+                key: apikey
+                
             }
         })
 
         if(response.data && response.data.routes.length > 0) {
             const data = response.data.routes[0].summary;
-            const distance= `${(data.lengthInMeters / 1000).toFixed(2)} km`;
-            const duration= `${(data.travelTimeInSeconds / 60).toFixed(2)} mins`
+            const distance= (data.lengthInMeters / 1000).toFixed(2);
+            const duration= (data.travelTimeInSeconds / 60).toFixed(2);
             
             return {
                 distance,
@@ -56,7 +56,6 @@ export const getSearchSuggestins = async (input) => {
         const response = await axios.get(`https://api.tomtom.com/search/2/search/${encodeURIComponent(input)}.json`, {
             params: {
                 key: apikey,
-                limit: 5
             }
         })
 

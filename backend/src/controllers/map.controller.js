@@ -41,14 +41,14 @@ export const getDistanceTime = asyncHandler(async(req, res) => {
         );
     }
 
-    const {start, end, travelMode} = req.params;
+    const {start, end} = req.params;
     
-    if (!start ||!end ||!travelMode) {
-        throw new ApiError(400, "Start, end, and travel mode are required");
+    if (!start ||!end) {
+        throw new ApiError(400, "Start and end are required");
     }
 
     try {
-        const distance = await getDistanceAndTime(start, end, travelMode);
+        const distance = await getDistanceAndTime(start, end);
 
         if(!distance) {
             throw new ApiError(400, "Invalid addresses or travel mode");
