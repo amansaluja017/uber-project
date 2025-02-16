@@ -18,8 +18,9 @@ function UserLogin() {
     setError('');
     try {
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/users/login`, data, {withCredentials: true});
+      console.log(response)
       if(response.status === 200) {
-        dispatch(login(data))
+        dispatch(login(response.data.data.user))
         localStorage.setItem('token', response.data.data.accessToken);
         navigate('/home');
       }

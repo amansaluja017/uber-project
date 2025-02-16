@@ -16,6 +16,7 @@ function CaptianLogout() {
             localStorage.removeItem('token');
             localStorage.removeItem('captianStatus');
             localStorage.removeItem('captianData');
+            localStorage.removeItem('captianSignupData');
             navigate('/captian-login');
         }
     })

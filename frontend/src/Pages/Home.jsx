@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Input,
   LocationSearchPanel,
@@ -8,15 +8,15 @@ import {
   WaitingForDriver,
   Button
 } from '../components/index'
-import { useForm } from 'react-hook-form'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { useRef } from 'react'
 import 'remixicon/fonts/remixicon.css'
 import axios from 'axios'
+import { useSelector, useDispatch } from 'react-redux'
+import { connectSocket, disconnectSocket, sendMessage } from '../store/SocketSlice.js'
 
 function Home() {
-  const { register, handleSubmit } = useForm();
   const [openPanel, setOpenPanel] = useState(false);
   const [vehiclePanel, setVehiclePanel] = useState(false);
   const [confirmVehiclePanel, setconfirmVehiclePanel] = useState(false);
@@ -37,8 +37,20 @@ function Home() {
   const lookingDriverPanelRef = useRef(null);
   const waitingForDriverPanelRef = useRef(null);
 
-  const startRegister = register('start');
-  const endRegister = register('end');
+  const user = useSelector(state => state.user.userData);
+
+  const {isConnected, messages} = useSelector(state => state.socket);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    connectSocket(dispatch);
+
+    sendMessage({userType: 'user', userId: user._id});
+
+    return () => {
+      disconnectSocket(dispatch);
+    }
+  }, [dispatch]);
 
   const handlePickup = async (e) => {
     const value = e.target.value;
@@ -50,7 +62,7 @@ function Home() {
     }
 
     try {
-      const { data } = await axios.get('http://localhost:3000/api/v1/maps/get-suggestions', {
+      const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/maps/get-suggestions`, {
         params: { input: value }
       });
   
@@ -71,7 +83,7 @@ function Home() {
     }
 
     try {
-      const { data } = await axios.get('http://localhost:3000/api/v1/maps/get-suggestions', {
+      const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/maps/get-suggestions`, {
         params: { input: value }
       });
       
@@ -82,13 +94,11 @@ function Home() {
     }
   };
 
-  const submit = () => { };
-
   const findTrip = async () => {
     setVehiclePanel(true);
     setOpenPanel(false);
 
-    const response = await axios.get('http://localhost:3000/api/v1/rides/get-price' , {
+    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/get-price` , {
       params: {
         start: `${start.lat},${start.lng}`,
         end: `${end.lat},${end.lng}`,
@@ -98,7 +108,7 @@ function Home() {
   }
   
   async function createRide() {
-    const response = await axios.post('http://localhost:3000/api/v1/rides/create', {
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/create`, {
       start: `${start.lat},${start.lng}`,
       end: `${end.lat},${end.lng}`,
       vehicleType
@@ -189,18 +199,16 @@ function Home() {
               <i ref={panelCloseRef} className="ri-arrow-down-wide-line"></i>
             </h5>
             <h3 ref={find} className='text-xl font-bold'>Find a trip</h3>
-            <form onSubmit={handleSubmit(submit)} className='relative'>
+            <form className='relative'>
               <div className='h-13 absolute w-[.78%] bg-black top-[30%] left-[4%] rounded-full'></div>
               <Input
                onChange={(e) => {
-                handlePickup(e);
-                startRegister.onChange(e);
-               }} onClick={() => { setOpenPanel(true), setActiveField('start') }} type='text' placeholder='Add a pick up location' className='h-9 px-7 mt-3 w-full' value={start.name} ref={startRegister.ref}></Input>
+                handlePickup(e)
+               }} onClick={() => { setOpenPanel(true), setActiveField('start') }} type='text' placeholder='Add a pick up location' className='h-9 px-7 mt-3 w-full' value={start.name}></Input>
               <Input
                onChange={(e) => {
-                handleDestination(e);
-                endRegister.onChange(e);
-               }} onClick={() => { setOpenPanel(true), setActiveField('end') }} type='text' placeholder='Enter your destination' className='h-9 mt-4 w-full px-7 ' value={end.name} ref={endRegister.ref}></Input>
+                handleDestination(e)
+               }} onClick={() => { setOpenPanel(true), setActiveField('end') }} type='text' placeholder='Enter your destination' className='h-9 mt-4 w-full px-7 ' value={end.name}></Input>
             </form>
 
             <Button onClick={() => {findTrip()}} className='w-full'>Find Trip</Button>
@@ -234,7 +242,7 @@ function Home() {
       <div ref={waitingForDriverPanelRef} className='h-screen bg-white flex top-[30%] fixed flex-col translate-y-full w-full p-4'>
         <h3 className='absolute top-0 text-xl font-bold py-4'>Driver's details </h3>
         <h5 onClick={() => { setWaitingForDriverPanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
-        <WaitingForDriver setWaitingForDriverPanel={setWaitingForDriverPanel} />
+        <WaitingForDriver vehicleType={vehicleType} start={start} end={end} fare={fare} setWaitingForDriverPanel={setWaitingForDriverPanel} />
       </div>
 
     </div>

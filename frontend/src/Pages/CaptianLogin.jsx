@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { Captianlogin } from '../store/CaptianAuthSlice'
+import { Captianlogin, Captiansignup } from '../store/CaptianAuthSlice'
 import { Input, Button } from '../components/index'
 import axios from 'axios'
 
@@ -19,7 +19,7 @@ function CaptianLogin() {
     try {
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/captian/login`, data);
       if(response.status === 200) {
-        dispatch(Captianlogin(data));
+        dispatch(Captianlogin(response.data.data.captian));
         localStorage.setItem('token', response.data.data.accessToken);
         navigate('/captian-home');
       }

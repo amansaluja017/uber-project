@@ -4,6 +4,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from '../utils/ApiError.js'
 import { validationResult } from "express-validator";
 import { getFare } from "../../Services/ride.service.js";
+import getAddressCoordinates, { getCaptiansInTheRadius } from "../../Services/map.service.js";
+import { sendMessagetoSocketId } from "../socket.js";
 
 export const createRide = asyncHandler(async (req, res) => {
     const errors = validationResult(req);
@@ -27,7 +29,20 @@ export const createRide = asyncHandler(async (req, res) => {
             throw new ApiError(500, "internal error: could not create new ride");
         }
 
-        return res.status(200).json(new ApiResponse(201, ride, "ride created successfully"));
+        res.status(200).json(new ApiResponse(201, ride, "ride created successfully"));
+
+        const pickupCoordinates = await getAddressCoordinates(start);
+
+        const captianInRadius = await getCaptiansInTheRadius(pickupCoordinates.lat, pickupCoordinates.lng, 2);
+
+        ride.otp = ""
+
+        captianInRadius.map(captian => {
+            sendMessagetoSocketId(captian.socketId, {
+                event: "newRide",
+                data: ride
+            })
+        });
 
 
     } catch (error) {

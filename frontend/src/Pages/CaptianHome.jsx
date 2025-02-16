@@ -1,16 +1,56 @@
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import CaptianDetails from '../components/CaptianDetails'
 import RidePopup from '../components/RidePopup'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import ConfirmPopupRide from '../components/confirmPopupRide'
+import { useSelector, useDispatch } from 'react-redux'
+import { connectSocket, disconnectSocket, sendMessage } from '../store/SocketSlice.js'
+import socket from '../services/Socket.service.js'
 
 function CaptianHome() {
   const [ridePopupPanel, setRidePopupPanel] = useState(true);
   const [confirmRidePopupPanel, setConfirmRidePopupPanel] = useState(false);
   const ridePopupPanelRef = useRef(null);
   const confirmRidePopupPanelRef = useRef(null);
+
+  const captian = useSelector(state => state.captian.captianData);
+
+  const {isConnected, messages} = useSelector(state => state.socket);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    connectSocket(dispatch);
+
+    sendMessage({userType: 'captian', userId: captian._id});
+
+    return () => {
+      disconnectSocket(dispatch);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if(!navigator.geolocation) return;
+
+    const updatelocation = () => {
+      navigator.geolocation.getCurrentPosition((position) => {
+        socket.emit('update-location-captian', {
+          userId: captian._id,
+          location: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+        })
+      })
+    };
+
+    const locationInterval = setInterval(updatelocation, 10000);
+    updatelocation();
+
+    return () => clearInterval(locationInterval);
+  }, [captian]);
+
 
   useGSAP(() => {
     if (ridePopupPanel) {

@@ -20,7 +20,6 @@ function CaptianSignup() {
     setError('')
     try {
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/captian/register`, data, {withCredentials: true});
-      console.log(response.data);
       if(response.status === 201) {
         dispatch(Captiansignup(data));
         localStorage.setItem('token', response.data.data.accessToken);

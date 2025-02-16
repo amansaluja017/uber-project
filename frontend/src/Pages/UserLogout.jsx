@@ -15,6 +15,7 @@ function UserLogout() {
             localStorage.removeItem('token');
             localStorage.removeItem('status');
             localStorage.removeItem('userData');
+            localStorage.removeItem('usersignupData');
             navigate('/login');
         }
     })

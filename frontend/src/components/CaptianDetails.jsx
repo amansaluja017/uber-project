@@ -2,7 +2,7 @@ import React from 'react'
 import {useSelector} from 'react-redux'
 
 function CaptianDetails() {
-    const captian = useSelector(state => state.captian.captianSignupData);
+    const captian = useSelector(state => state.captian.captianData);
 
     return (
         <div>

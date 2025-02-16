@@ -3,7 +3,7 @@ import { Button } from '../components/index'
 import { useSelector } from 'react-redux'
 
 function RidePopup(props) {
-    const captian = useSelector(state => state.captian.captianSignupData);
+    const captian = useSelector(state => state.captian.captianData);
 
     return (
         <div>
@@ -24,7 +24,7 @@ function RidePopup(props) {
                             <i className="ri-map-pin-fill"></i>
                         </div>
                         <div className='ml-3'>
-                            <h3 className='font-semibold text-sm'>562/11-A</h3>
+                            <h3 className='font-semibold text-sm'>Pickup</h3>
                             <p className='text-sm text-gray-600'>Lorem ipsum dolor sit amet, consectetur</p>
                         </div>
                     </div>
@@ -34,7 +34,7 @@ function RidePopup(props) {
                             <i className="ri-map-pin-3-fill"></i>
                         </div>
                         <div className='ml-3'>
-                            <h3 className='font-semibold text-sm'>Third Wave Coffee</h3>
+                            <h3 className='font-semibold text-sm'>Destination</h3>
                             <p className='text-sm text-gray-600'>Lorem ipsum dolor sit amet, consectetur</p>
                         </div>
                     </div>

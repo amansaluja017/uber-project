@@ -76,10 +76,10 @@ const captianSchema = new Schema(
       },
     },
     location: {
-      latitude: {
+      lat: {
         type: Number,
       },
-      longitude: {
+      lng: {
         type: Number,
       },
     },

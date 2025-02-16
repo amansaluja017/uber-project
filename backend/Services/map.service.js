@@ -1,3 +1,4 @@
+import { Captian } from '../src/models/captian.model.js';
 import { ApiError } from '../src/utils/ApiError.js';
 import axios from 'axios';
 
@@ -72,6 +73,18 @@ export const getSearchSuggestins = async (input) => {
     }
 }
 
+export const getCaptiansInTheRadius = async(lat, lng, radius) => {
+
+    const captians = await Captian.find({
+        location: {
+            $geoWithin: {
+                $centerSphere: [[lat, lng], radius / 6371 ]
+            }
+        }
+    });
+
+    return captians;
+};
    
 
 

@@ -1,13 +1,15 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
 function WaitingForDriver(props) {
+  const captian = useSelector(state => state.captian.captianSignupData)
   return (
     <div>
       <div className='flex mt-10 mb-10 justify-between'>
         <img className='h-12 w-12 object-contain' src="https://www.jaipurcitycab.in/images/car2.png" alt="car" />
         <div className='text-end'>
-          <h4 className='text-xs text-gray-500'>driver's name</h4>
-          <h2 className='font-semibold'>ABC-A12-1234</h2>
+          <h4 className='text-xs text-gray-500'>test test</h4>
+          <h2 className='font-semibold'>123456789</h2>
           <h4 className='text-xs text-gray-500'>car's details</h4>
         </div>
       </div>
@@ -18,8 +20,8 @@ function WaitingForDriver(props) {
             <i className="ri-map-pin-fill"></i>
           </div>
           <div className='ml-3'>
-            <h3 className='font-semibold text-xl'>562/11-A</h3>
-            <p className='text-sm'>Lorem ipsum dolor sit amet, consectetur</p>
+            <h3 className='font-semibold text-xl'>Pickup</h3>
+            <p className='text-sm'>{props.start.name}</p>
           </div>
         </div>
         <div className='h-[1px] absolute  bg-gray-200 w-full'></div>
@@ -29,8 +31,8 @@ function WaitingForDriver(props) {
             <i className="ri-map-pin-3-fill"></i>
           </div>
           <div className='ml-3'>
-            <h3 className='font-semibold text-xl'>Third Wave Coffee</h3>
-            <p className='text-sm'>Lorem ipsum dolor sit amet, consectetur</p>
+            <h3 className='font-semibold text-xl'>Destination</h3>
+            <p className='text-sm'>{props.end.name}</p>
           </div>
         </div>
         <div className='h-[1px] absolute  bg-gray-200 w-full'></div>
@@ -40,7 +42,7 @@ function WaitingForDriver(props) {
             <i className="ri-cash-line"></i>
           </div>
           <div className='ml-3'>
-            <h3 className='font-semibold text-xl'>₹193.20</h3>
+            <h3 className='font-semibold text-xl'>₹{props.fare[props.vehicleType]}</h3>
             <p className='text-sm'>Cash Cash</p>
           </div>
         </div>

@@ -80,3 +80,7 @@ export const getSuggestions = asyncHandler(async(req, res) => {
         console.log(error);
     }
 });
+
+export const getCaptiansNearBy = asyncHandler(async(req, res) => {
+    const { lat, lng, radius } = req.query;
+})

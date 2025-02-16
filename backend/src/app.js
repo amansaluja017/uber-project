@@ -13,7 +13,7 @@ app.use(
 
 app.use(express.json({ limit: "40kb" }));
 app.use(express.urlencoded({ extended: true, limit: "40kb" }));
-app.use(express.static("public"));
+app.use("/src", express.static("src", { extensions: ["css"] }));
 app.use(cookieParser());
 
 import userRoutes from "./routes/user.routes.js";
