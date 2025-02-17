@@ -95,6 +95,11 @@ This project is a ride-sharing application built with React, Redux, and React Ro
 - **Access Flow:**  
   - If `state.user.status` is true, the user sees the Home page.
   - If not authenticated, the user is redirected to `/login`.
+- **Features:**
+  - **Map View:** Displays a map with the user's current location.
+  - **Trip Search:** Allows users to search for trips by entering pickup and destination locations.
+  - **Vehicle Selection:** Users can select a vehicle type and view fare estimates.
+  - **Ride Confirmation:** Users can confirm a ride and view driver details once a driver is assigned.
 
 #### UserProtected Component
 - **Description:**  
@@ -120,10 +125,11 @@ This project is a ride-sharing application built with React, Redux, and React Ro
 - **Access Flow:**  
   - If the Redux store’s `state.captian.status` is true, the captain is allowed to view the homepage.
   - If not authenticated, the captain is redirected to `/captian-login`.
-- **Usage:**  
-  This route is used for accessing driver-specific data, such as ride history, earnings, and other dashboard metrics.
-
----
+- **Features:**
+  - **Map View:** Displays a map with the captain's current location.
+  - **Ride Requests:** Captains can view and accept ride requests.
+  - **Ride Details:** Captains can view ride details and confirm rides.
+  - **Location Updates:** Captains' locations are updated in real-time.
 
 #### CaptianProtected Component
 - **Description:**  
@@ -153,3 +159,16 @@ This project is a ride-sharing application built with React, Redux, and React Ro
     A button allows the captain to trigger a complete ride action which opens a panel that wraps the `FinishRide` component.
 - **Usage:**  
   This page is accessed when a captain accepts a ride. It provides drivers with the necessary UI to view route information and to conclude the ride once it is complete.
+
+---
+
+### Route: `/riding`
+- **Description:**  
+  The riding route displays the current ride details for the user. This page shows the ride status, driver details, and fare information.
+- **Method:** GET (renders on browser navigation)
+- **Component:** `Riding`
+- **Features:**
+  - **Driver Details:** Displays the driver's name, vehicle details, and contact information.
+  - **Ride Route:** Shows the pickup and destination locations.
+  - **Fare Information:** Displays the fare amount and payment method.
+  - **Payment Button:** Allows users to make a payment for the ride.

@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Input } from '../components/index'
 import { Link } from 'react-router-dom'
-import {useForm} from 'react-hook-form'
 import { useSelector } from 'react-redux'
+import axios from 'axios'
+import { useNavigate } from'react-router-dom'
 
 function ConfirmPopupRide(props) {
-    const {register, handleSubmit} = useForm();
+    const navigate = useNavigate();
+    const [otp, setOtp] = useState('');
     const captian = useSelector(state => state.captian.captianData);
 
     const userFirstName = props.ride?.user.firstName;
@@ -13,7 +15,28 @@ function ConfirmPopupRide(props) {
     const payment = props.ride?.fare;
     const totalFare = (payment * (1 - 0.30)).toFixed(2);
 
-    const submit = () => {}
+    const submit = async (e) => {
+        setOtp('');
+        e.preventDefault();
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/start-ride`, {
+                params: {
+                    rideId: props.ride._id,
+                    otp
+                },
+                withCredentials: true            
+            });
+            
+            if(response.status === 200) {
+                props.setConfirmRidePopupPanel(false);
+                props.setRidePopupPanel(false);
+                navigate('/captian-riding');
+                console.log('status 200', response);
+            }
+        } catch (error) {
+            console.error('Error starting ride:', error);
+        }
+    };
 
     return (
         <div>
@@ -60,10 +83,10 @@ function ConfirmPopupRide(props) {
                     </div>
                 </div>
             </div>
-            <form onSubmit={handleSubmit(submit)}>
+            <form onSubmit={submit}>
                 <div>
-                    <Input type='number' className='w-full py-2 px-5' placeholder='Enter OTP' {...register('otp', {required: true})} />
-                    <Link to='/captian-riding' className='bg-green-700 mt-8 text-white w-full py-2 rounded flex items-center justify-center'>Confirm</Link>
+                    <Input onChange={(e) => setOtp(e.target.value)} value={otp} type='number' className='w-full py-2 px-5' placeholder='Enter OTP' />
+                    <Button  className='bg-green-700 mt-8 w-full'>Confirm</Button>
                     <Button onClick={() => { props.setConfirmRidePopupPanel(false) }} className='bg-red-700 mt-[2%] w-full'>Cancel</Button>
                 </div>
             </form>

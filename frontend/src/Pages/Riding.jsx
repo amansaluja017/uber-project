@@ -1,9 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../components/index'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import 'remixicon/fonts/remixicon.css'
+import socket from '../services/Socket.service';
+import { useSelector, useDispatch } from 'react-redux';
+import { connectSocket } from '../store/SocketSlice';
 
 function Riding() {
+    const dispatch = useDispatch();
+    const {state} = useLocation();
+    const {ride} = state || {};
+
+    console.log(ride);
+    
+    const { isConnected, messages } = useSelector(state => state.socket);
+    console.log('messages', messages);
+
     return (
         <div className='h-screen'>
             <div className='fixed flex h-8 w-8 z-10 justify-center items-center rounded-full top-2 right-2 bg-white'>
@@ -17,9 +29,9 @@ function Riding() {
                     <div className='flex justify-between'>
                         <img className='h-12 w-12 object-contain' src="https://www.jaipurcitycab.in/images/car2.png" alt="car" />
                         <div className='text-end'>
-                            <h4 className='text-xs text-gray-500'>driver's name</h4>
-                            <h2 className='font-semibold text-sm'>ABC-A12-1234</h2>
-                            <h4 className='text-xs text-gray-500'>car's details</h4>
+                            <h4 className='text-xs text-gray-500'>{ride.captian.firstName + " " + ride.captian.lastName}</h4>
+                            <h2 className='font-semibold text-sm'>{ride.captian.vehicle.plate}</h2>
+                            <h4 className='text-xs text-gray-500'>{`${ride.captian.vehicle.color}, ${ride.captian.vehicle.vehicleType}, capicity:- ${ride.captian.vehicle.capicity}`}</h4>
                         </div>
                     </div>
                     <div>
@@ -28,8 +40,8 @@ function Riding() {
                                 <i className="ri-map-pin-fill"></i>
                             </div>
                             <div className='ml-3'>
-                                <h3 className='font-semibold text-sm'>562/11-A</h3>
-                                <p className='text-sm'>Lorem ipsum dolor sit amet, consectetur</p>
+                                <h3 className='font-semibold text-sm'>Pickup</h3>
+                                <p className='text-sm'>{ride.start}</p>
                             </div>
                         </div>
 
@@ -38,8 +50,8 @@ function Riding() {
                                 <i className="ri-map-pin-3-fill"></i>
                             </div>
                             <div className='ml-3'>
-                                <h3 className='font-semibold text-sm'>Third Wave Coffee</h3>
-                                <p className='text-sm'>Lorem ipsum dolor sit amet, consectetur</p>
+                                <h3 className='font-semibold text-sm'>Destination</h3>
+                                <p className='text-sm'>{ride.end}</p>
                             </div>
                         </div>
 
@@ -48,13 +60,13 @@ function Riding() {
                                 <i className="ri-cash-line"></i>
                             </div>
                             <div className='ml-3'>
-                                <h3 className='font-semibold text-sm'>₹193.20</h3>
+                                <h3 className='font-semibold text-sm'>₹{ride.fare}</h3>
                                 <p className='text-sm'>Cash Cash</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <Button className='bg-green-600'>Make a Payment</Button>
+                <Button className='bg-green-600 w-full'>Make a Payment</Button>
             </div>
         </div>
     )

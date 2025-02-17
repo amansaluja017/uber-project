@@ -1,4 +1,4 @@
-import { createNewRide } from "../../Services/ride.service.js";
+import { confirmTheRide, createNewRide, startTheRide } from "../../Services/ride.service.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from '../utils/ApiError.js'
@@ -23,7 +23,7 @@ export const createRide = asyncHandler(async (req, res) => {
     if (!start || !end || !vehicleType) {
         throw new ApiError(400, "All fields are required");
     }
-    
+
 
     try {
         const ride = await createNewRide({ user: req.user?._id, start, end, vehicleType });
@@ -32,11 +32,11 @@ export const createRide = asyncHandler(async (req, res) => {
         }
         res.status(200).json(new ApiResponse(201, ride, "ride created successfully"));
 
-        const captianInRadius = await getCaptiansInTheRadius(start.lat, start.lng , 2);
+        const captianInRadius = await getCaptiansInTheRadius(start.lat, start.lng, 2);
 
         ride.otp = ""
 
-        const rideUser = await Ride.findOne({_id: ride._id}).populate('user');
+        const rideUser = await Ride.findOne({ _id: ride._id }).populate('user');
 
         captianInRadius.map(captian => {
             sendMessagetoSocketId(captian.socketId, {
@@ -76,5 +76,75 @@ export const getPrice = asyncHandler(async (req, res) => {
         return res.status(200).json(new ApiResponse(200, fare, "fare fetched successfully"));
     } catch (error) {
         throw new ApiError(400, "internal server error: Could not find fare: " + error.message);
+    }
+});
+
+export const confirmRide = asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        throw new ApiError(
+            400,
+            errors.array().map((err) => err.msg)
+        );
+    }
+
+    try {
+        const { rideId } = req.body;
+
+        const ride = await confirmTheRide({ rideId, captian: req.captian });
+
+        if (!ride) {
+            throw new ApiError(400, "Ride not found or already confirmed");
+        };
+
+        sendMessagetoSocketId(ride.user.socketId, {
+            event: 'ride-confirmed',
+            data: ride
+        });
+
+        return res.status(200).json(new ApiResponse(200, ride, "Ride confirmed successfully"));
+    } catch (error) {
+        console.error(error);
+        throw new ApiError(500, "internal error");
+    }
+})
+
+export const startRide = asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        throw new ApiError(
+            400,
+            errors.array().map((err) => err.msg)
+        );
+    }
+
+    try {
+        const { rideId, otp } = req.query;
+        console.log(rideId, otp)
+
+        if (!rideId) {
+            throw new ApiError(400, "rideId is required");
+        }
+
+        if (!otp) {
+            throw new ApiError(400, "OTP is required");
+        }
+
+        const ride = await startTheRide({ rideId, otp, captian: req.captian });
+        console.log(ride);
+
+        if (!ride) {
+            throw new ApiError(400, "Ride not found or OTP is incorrect");
+        }
+
+        sendMessagetoSocketId(ride.user.socketId, {
+            event: 'ride-started',
+            data: ride
+        });
+
+        return res.status(200).json(new ApiResponse(200, ride, "Ride started successfully"));
+    } catch (error) {
+        console.error(error);
+        throw new ApiError(500, "internal error");
     }
 })

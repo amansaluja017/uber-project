@@ -17,7 +17,7 @@ function CaptianLogin() {
   const submit = async (data) => {
     setError('');
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/captian/login`, data);
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/captian/login`, data, {withCredentials: true});
       if(response.status === 200) {
         dispatch(Captianlogin(response.data.data.captian));
         localStorage.setItem('token', response.data.data.accessToken);

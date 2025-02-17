@@ -55,7 +55,11 @@ function RidePopup(props) {
                     </div>
                 </div>
             </div>
-            <Button onClick={() => {props.setConfirmRidePopupPanel(true), props.setRidePopupPanel(false)}} className='bg-green-700 mt-8 w-full'>Accept</Button>
+            <Button onClick={() => {
+                props.setConfirmRidePopupPanel(true)
+                props.setRidePopupPanel(false)
+                props.confirmRide()
+            }} className='bg-green-700 mt-8 w-full'>Accept</Button>
             <Button onClick={() => { props.setRidePopupPanel(false) }} className='bg-gray-500 mt-[2%] w-full'>Ignore</Button>
         </div>
     )

@@ -62,14 +62,8 @@ export const registercaptian = asyncHandler(async (req, res) => {
     status,
   });
 
-  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
-    captian._id
-  );
-
   return res
     .status(201)
-    .cookie("accessToken", accessToken)
-    .cookie("refreshToken", refreshToken)
     .json(new ApiResponse(201, {captian, accessToken, refreshToken}, "captian created successfully"));
 });
 
@@ -101,19 +95,14 @@ export const logincaptian = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid credentials");
   }
 
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
-
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     captian._id
   );
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken)
+    .cookie("refreshToken", refreshToken)
     .json(
       new ApiResponse(
         200,

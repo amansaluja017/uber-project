@@ -70,3 +70,37 @@ export const createNewRide = async ({user, start, end, vehicleType}) => {
 
     return ride;
 };
+
+export const confirmTheRide = async ({rideId, captian}) => {
+    
+    if(!rideId) {
+        throw new ApiError(400, "Ride ID is required");
+    }
+
+    await Ride.findOneAndUpdate({_id: rideId}, {status: 'accepted', captian}, {new: true});
+
+    const ride = await Ride.findOne({_id: rideId}).populate('user').populate('captian');
+
+    if(!ride) {
+        throw new ApiError (404, "Ride not found");
+    }
+
+    return ride;
+}
+
+export const startTheRide = async ({rideId, otp, captian}) => {
+    
+    if(!rideId ||!otp ||!captian) {
+        throw new ApiError(400, "Ride ID, OTP and Captian are required");
+    }
+
+    await Ride.findOneAndUpdate({_id: rideId}, {status: 'ongoing', captian}, {new: true});
+
+    const ride = await Ride.findOne({_id: rideId}).populate('user').populate('captian');
+
+    if(ride.status === 'accepted') {
+        throw new ApiError(400, "Ride is already started");
+    }
+
+    return ride;
+}

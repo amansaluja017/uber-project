@@ -15,6 +15,8 @@ import 'remixicon/fonts/remixicon.css'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { connectSocket, disconnectSocket, receiveMessage, sendMessage } from '../store/SocketSlice.js'
+import socket from '../services/Socket.service.js'
+import { useNavigate } from 'react-router-dom'
 
 function Home() {
   const [openPanel, setOpenPanel] = useState(false);
@@ -29,6 +31,7 @@ function Home() {
   const [activeField, setActiveField] = useState(null);
   const [fare, setFare] = useState('');
   const [vehicleType, setVehicleType] = useState(null);
+  const [ride, setRide] = useState(null);
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
   const find = useRef(null);
@@ -38,6 +41,7 @@ function Home() {
   const waitingForDriverPanelRef = useRef(null);
 
   const user = useSelector(state => state.user.userData);
+  const navigate = useNavigate();
 
   const {isConnected, messages} = useSelector(state => state.socket);
   const dispatch = useDispatch();
@@ -46,6 +50,20 @@ function Home() {
     connectSocket(dispatch);
 
     sendMessage({userType: 'user', userId: user._id});
+
+    socket.on('ride-confirmed', (message) => {
+      console.log('confirm ride received', message);
+      setWaitingForDriverPanel(true);
+      dispatch(receiveMessage(message));
+      setRide(message);
+    });
+
+    socket.on('ride-started', (message) => {
+      console.log('ride started received', message);
+      setWaitingForDriverPanel(false);
+      dispatch(receiveMessage(message));
+      navigate('/riding', {state: {ride: message}});
+    });
 
     return () => {
       disconnectSocket(dispatch);
@@ -105,6 +123,7 @@ function Home() {
       }
     })
     setFare(response.data.data);
+    console.log(response.data.data);
   }
   
   async function createRide() {
@@ -242,7 +261,7 @@ function Home() {
       <div ref={waitingForDriverPanelRef} className='h-screen bg-white flex top-[30%] fixed flex-col translate-y-full w-full p-4'>
         <h3 className='absolute top-0 text-xl font-bold py-4'>Driver's details </h3>
         <h5 onClick={() => { setWaitingForDriverPanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
-        <WaitingForDriver vehicleType={vehicleType} start={start} end={end} fare={fare} setWaitingForDriverPanel={setWaitingForDriverPanel} />
+        <WaitingForDriver ride={ride} vehicleType={vehicleType} start={start} end={end} fare={fare} setWaitingForDriverPanel={setWaitingForDriverPanel} />
       </div>
 
     </div>

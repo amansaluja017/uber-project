@@ -620,3 +620,88 @@ The destination location. Must be at least 3 characters.
 Returned when required query parameters are missing or invalid.
 - #### 500 Internal Server Error:
 Indicates an error occurred while calculating the fare.
+
+## Ride Confirmation API Endpoint Documentation
+
+### Endpoint: `/confirm`
+
+#### Description
+The `/confirm` endpoint is used by captains to confirm a ride. It requires a valid JWT token for authentication.
+
+#### HTTP Method
+`POST`
+
+#### Request Body
+The request should be in JSON format containing the following property:
+- **rideId** (string, required): The ID of the ride to be confirmed.
+
+#### Example Request
+```json
+{
+    "rideId": "unique_ride_id"
+}
+```
+
+#### Successful Response
+On success, the endpoint returns a JSON response with status code 200 OK including the ride details.
+
+#### Example Successful Response
+```json
+{
+    "status": 200,
+    "data": {
+        "_id": "unique_ride_id",
+        "user": "user_id",
+        "captain": "captain_id",
+        // other ride details
+    },
+    "message": "Ride confirmed successfully"
+}
+```
+
+#### Error Responses
+- **400 Bad Request:** Returned when required fields are missing or validation fails.
+- **401 Unauthorized:** Returned when the JWT token is missing or invalid.
+- **500 Internal Server Error:** Indicates an unexpected server error during ride confirmation.
+
+## Ride Start API Endpoint Documentation
+
+### Endpoint: `/start-ride`
+
+#### Description
+The `/start-ride` endpoint is used by captains to start a ride. It requires a valid JWT token for authentication.
+
+#### HTTP Method
+`GET`
+
+#### Query Parameters
+The request should include the following query parameters:
+- **rideId** (string, required): The ID of the ride to be started.
+- **otp** (string, required): The OTP for starting the ride.
+
+#### Example Request
+```
+GET /start-ride?rideId=unique_ride_id&otp=123456
+```
+
+#### Successful Response
+On success, the endpoint returns a JSON response with status code 200 OK including the ride details.
+
+#### Example Successful Response
+```json
+{
+    "status": 200,
+    "data": {
+        "_id": "unique_ride_id",
+        "user": "user_id",
+        "captain": "captain_id",
+        // other ride details
+    },
+    "message": "Ride started successfully"
+}
+```
+
+#### Error Responses
+- **400 Bad Request:** Returned when required fields are missing or validation fails.
+- **401 Unauthorized:** Returned when the JWT token is missing or invalid.
+- **500 Internal Server Error:** Indicates an unexpected server error during ride start.

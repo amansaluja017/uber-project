@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import axios from 'axios'
 import { Link } from 'react-router-dom'
 import CaptianDetails from '../components/CaptianDetails'
 import RidePopup from '../components/RidePopup'
@@ -62,6 +63,14 @@ function CaptianHome() {
     return () => clearInterval(locationInterval);
   }, [captian]);
 
+  async function confirmRide() {
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/confirm`, {
+      rideId: ride._id,
+      captainId: captian._id
+    }, {withCredentials: true});
+    console.log(response)
+  };
+
 
   useGSAP(() => {
     if (ridePopupPanel) {
@@ -102,7 +111,7 @@ function CaptianHome() {
       <div ref={ridePopupPanelRef} className='h-screen bg-white flex top-[30%] fixed translate-y-full flex-col w-full p-4'>
         <h3 className='absolute top-0 text-xl font-bold py-4 mt-2'>New Ride Available! </h3>
         <h5 onClick={() => { setRidePopupPanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
-        <RidePopup ride={ride} setRidePopupPanel={setRidePopupPanel} setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
+        <RidePopup confirmRide={confirmRide} ride={ride} setRidePopupPanel={setRidePopupPanel} setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
       </div>
 
       <div ref={confirmRidePopupPanelRef} className='h-screen bg-white flex top-0 z-11 fixed translate-y-full flex-col w-full p-4'>

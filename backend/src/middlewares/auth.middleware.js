@@ -63,6 +63,7 @@ export const verifyJWTCaptian = asyncHandler(async (req, _, next) => {
     req.captian = captian;
     next();
   } catch (error) {
+    console.error(error);
     throw new ApiError(401, "unauthorized access", error.message);
   }
 });
