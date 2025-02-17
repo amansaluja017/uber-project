@@ -1,29 +1,40 @@
-import React, {useState, useRef, useEffect} from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import CaptianDetails from '../components/CaptianDetails'
 import RidePopup from '../components/RidePopup'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
-import ConfirmPopupRide from '../components/confirmPopupRide'
+import ConfirmPopupRide from '../components/ConfirmPopupRide.jsx'
 import { useSelector, useDispatch } from 'react-redux'
-import { connectSocket, disconnectSocket, sendMessage } from '../store/SocketSlice.js'
+import { connectSocket, disconnectSocket, receiveMessage, sendMessage } from '../store/SocketSlice.js'
 import socket from '../services/Socket.service.js'
 
 function CaptianHome() {
-  const [ridePopupPanel, setRidePopupPanel] = useState(true);
+  const [ridePopupPanel, setRidePopupPanel] = useState(false);
   const [confirmRidePopupPanel, setConfirmRidePopupPanel] = useState(false);
+  const [ride, setRide] = useState(null);
   const ridePopupPanelRef = useRef(null);
   const confirmRidePopupPanelRef = useRef(null);
 
   const captian = useSelector(state => state.captian.captianData);
 
-  const {isConnected, messages} = useSelector(state => state.socket);
+  const { isConnected, messages } = useSelector(state => state.socket);
   const dispatch = useDispatch();
 
   useEffect(() => {
     connectSocket(dispatch);
 
-    sendMessage({userType: 'captian', userId: captian._id});
+    socket.on('message', (message) => {
+      console.log('message received', message);
+      setRide(message);
+      dispatch(receiveMessage(message));
+
+      if(message) {
+        setRidePopupPanel(true);
+      }
+    });
+
+    sendMessage({ userType: 'captian', userId: captian._id });
 
     return () => {
       disconnectSocket(dispatch);
@@ -31,7 +42,7 @@ function CaptianHome() {
   }, [dispatch]);
 
   useEffect(() => {
-    if(!navigator.geolocation) return;
+    if (!navigator.geolocation) return;
 
     const updatelocation = () => {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -71,7 +82,7 @@ function CaptianHome() {
         transform: 'translateY(100%)'
       })
     }
-  },[ridePopupPanel, confirmRidePopupPanel]);
+  }, [ridePopupPanel, confirmRidePopupPanel]);
 
   return (
     <div className='h-screen'>
@@ -85,18 +96,18 @@ function CaptianHome() {
         <img className='h-full object-cover' src="https://storage.googleapis.com/support-forums-api/attachment/thread-146048858-12639125651610213305.PNG" alt="map" />
       </div>
       <div className='h-2/5 p-5'>
-       <CaptianDetails />
+        <CaptianDetails />
       </div>
 
       <div ref={ridePopupPanelRef} className='h-screen bg-white flex top-[30%] fixed translate-y-full flex-col w-full p-4'>
         <h3 className='absolute top-0 text-xl font-bold py-4 mt-2'>New Ride Available! </h3>
-        <h5 onClick={() => {setRidePopupPanel(false)}} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
-        <RidePopup setRidePopupPanel={setRidePopupPanel} setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
+        <h5 onClick={() => { setRidePopupPanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
+        <RidePopup ride={ride} setRidePopupPanel={setRidePopupPanel} setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
       </div>
 
       <div ref={confirmRidePopupPanelRef} className='h-screen bg-white flex top-0 z-11 fixed translate-y-full flex-col w-full p-4'>
         <h3 className='absolute top-0 text-xl font-bold py-4 mt-10'>Confirm your Ride </h3>
-        <ConfirmPopupRide setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />
+        <ConfirmPopupRide ride={ride} setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />
       </div>
     </div>
   )

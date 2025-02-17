@@ -6,6 +6,8 @@ import { validationResult } from "express-validator";
 import { getFare } from "../../Services/ride.service.js";
 import getAddressCoordinates, { getCaptiansInTheRadius } from "../../Services/map.service.js";
 import { sendMessagetoSocketId } from "../socket.js";
+import { User } from "../models/user.model.js";
+import { Ride } from "../models/ride.model.js";
 
 export const createRide = asyncHandler(async (req, res) => {
     const errors = validationResult(req);
@@ -21,26 +23,25 @@ export const createRide = asyncHandler(async (req, res) => {
     if (!start || !end || !vehicleType) {
         throw new ApiError(400, "All fields are required");
     }
-    console.log(start)
+    
 
     try {
         const ride = await createNewRide({ user: req.user?._id, start, end, vehicleType });
         if (!ride) {
             throw new ApiError(500, "internal error: could not create new ride");
         }
-
         res.status(200).json(new ApiResponse(201, ride, "ride created successfully"));
 
-        const pickupCoordinates = await getAddressCoordinates(start);
-
-        const captianInRadius = await getCaptiansInTheRadius(pickupCoordinates.lat, pickupCoordinates.lng, 2);
+        const captianInRadius = await getCaptiansInTheRadius(start.lat, start.lng , 2);
 
         ride.otp = ""
 
+        const rideUser = await Ride.findOne({_id: ride._id}).populate('user');
+
         captianInRadius.map(captian => {
             sendMessagetoSocketId(captian.socketId, {
-                event: "newRide",
-                data: ride
+                event: "message",
+                data: rideUser
             })
         });
 

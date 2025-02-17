@@ -52,7 +52,7 @@ export function initializeSocket(server) {
 
 export function sendMessagetoSocketId(socketId, message) {
     if(io) {
-        io.to(socketId).emit('message', message);
+        io.to(socketId).emit(message.event, message.data);
     } else {
         console.log('Socket.io server is not initialized');
     }

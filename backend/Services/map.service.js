@@ -14,7 +14,7 @@ const getAddressCoordinates = async (address) => {
             
         })
         if(response.data && response.data.results.length > 0) {
-            return response.data.results[0].position;
+            return [response.data.results[0].position, response.data.summary.query ]
         }
     } catch (error) {
         console.error("Error fetching address coordinates:", error.response? error.response.data : error.message);
@@ -22,12 +22,12 @@ const getAddressCoordinates = async (address) => {
     }
 };
 
-export const getDistanceAndTime = async(start, end) => {
+export const getDistanceAndTime = async(pickup, destination) => {
 
     const apikey = process.env.TOMTOM_API_KEY
 
     try {
-        const response = await axios.get(`https://api.tomtom.com/routing/1/calculateRoute/${encodeURIComponent(start)}:${encodeURIComponent(end)}/json`, {
+        const response = await axios.get(`https://api.tomtom.com/routing/1/calculateRoute/${encodeURIComponent(pickup)}:${encodeURIComponent(destination)}/json`, {
             params: {
                 key: apikey
                 

@@ -8,6 +8,11 @@ function ConfirmPopupRide(props) {
     const {register, handleSubmit} = useForm();
     const captian = useSelector(state => state.captian.captianData);
 
+    const userFirstName = props.ride?.user.firstName;
+    const userLastName = props.ride?.user.lastName;
+    const payment = props.ride?.fare;
+    const totalFare = (payment * (1 - 0.30)).toFixed(2);
+
     const submit = () => {}
 
     return (
@@ -16,7 +21,7 @@ function ConfirmPopupRide(props) {
                 <div className='flex justify-between mt-20 bg-yellow-300 py-4 w-full rounded-xl'>
                     <div className='flex justify-center items-center gap-2 px-2'>
                         <img className='h-10 w-10 object-contain rounded-full' src="https://img.freepik.com/free-vector/smiling-young-man-illustration_1308-174669.jpg" alt="avatar" />
-                        <h3 className='font-semibold'>{`${captian.firstName} ${captian.lastName}`}</h3>
+                        <h3 className='font-semibold'>{`${userFirstName} ${userLastName}`}</h3>
                     </div>
 
                     <div className='text-start px-2 flex justify-center items-center'>
@@ -30,7 +35,7 @@ function ConfirmPopupRide(props) {
                         </div>
                         <div className='ml-3'>
                             <h3 className='font-semibold text-xl'>Pickup</h3>
-                            <p className='text-xs text-gray-600'>Lorem ipsum dolor sit amet, consectetur</p>
+                            <p className='text-xs text-gray-600'>{props.ride?.start}</p>
                         </div>
                     </div>
 
@@ -40,7 +45,7 @@ function ConfirmPopupRide(props) {
                         </div>
                         <div className='ml-3'>
                             <h3 className='font-semibold text-xl'>Destination</h3>
-                            <p className='text-xs text-gray-600'>Lorem ipsum dolor sit amet, consectetur</p>
+                            <p className='text-xs text-gray-600'>{props.ride?.end}</p>
                         </div>
                     </div>
 
@@ -49,7 +54,7 @@ function ConfirmPopupRide(props) {
                             <i className="ri-cash-line"></i>
                         </div>
                         <div className='ml-3'>
-                            <h3 className='font-semibold text-xl'>₹193.20</h3>
+                            <h3 className='font-semibold text-xl'>₹{totalFare}</h3>
                             <p className='text-xs text-gray-600'>Cash Cash</p>
                         </div>
                     </div>

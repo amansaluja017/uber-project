@@ -3,17 +3,17 @@ import {ApiError} from '../src/utils/ApiError.js';
 import { getDistanceAndTime } from "./map.service.js";
 import crypto from 'crypto'
 
-export async function getFare(start, end ) {
-    if(!start || !end) {
+export async function getFare(pickup, destination ) {
+    if(!pickup || !destination) {
         throw new ApiError(401, "You must provide pickup and destination");
     }
 
-    const distanceTime =  await getDistanceAndTime(start, end);
+    const distanceTime =  await getDistanceAndTime(pickup, destination);
 
     const baseFare = {
-        auto: 30,
-        car: 50,
-        motorbike: 20
+        auto: 10,
+        car: 20,
+        motorbike: 8
     };
 
     const perKmRate = {
@@ -42,13 +42,17 @@ const getOtp = (num) => {
 }
 
 export const createNewRide = async ({user, start, end, vehicleType}) => {
+    console.log(start)
 
-    const fare = await getFare(start, end);
+    const pickup = `${start.lat},${start.lng}`;
+    const destination = `${end.lat},${end.lng}`;
+
+    const fare = await getFare(pickup, destination);
     if(!fare) {
         throw new ApiError(500, "internal server error: Could not find fare")
     }
 
-    const distanceTime = await getDistanceAndTime(start, end);
+    const distanceTime = await getDistanceAndTime(pickup, destination);
 
     if(!distanceTime) {
         throw new ApiError(500, "internal server error: Could not find distance and time")
@@ -56,8 +60,8 @@ export const createNewRide = async ({user, start, end, vehicleType}) => {
 
     const ride = Ride.create({
         user,
-        start,
-        end,
+        start: start.name,
+        end: end.name,
         fare: fare[vehicleType],
         distance: distanceTime.distance,
         duration: distanceTime.duration,

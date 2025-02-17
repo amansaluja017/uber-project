@@ -14,7 +14,7 @@ import { useRef } from 'react'
 import 'remixicon/fonts/remixicon.css'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
-import { connectSocket, disconnectSocket, sendMessage } from '../store/SocketSlice.js'
+import { connectSocket, disconnectSocket, receiveMessage, sendMessage } from '../store/SocketSlice.js'
 
 function Home() {
   const [openPanel, setOpenPanel] = useState(false);
@@ -109,10 +109,10 @@ function Home() {
   
   async function createRide() {
     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/create`, {
-      start: `${start.lat},${start.lng}`,
-      end: `${end.lat},${end.lng}`,
+      start,
+      end,
       vehicleType
-    }, {withCredentials: true})
+    }, {withCredentials: true});
     console.log(response)
   }
 
