@@ -39,28 +39,79 @@ function CaptianSignup() {
       </div>
         <form onSubmit={handleSubmit(submit)} className='p-7 flex flex-col justify-around -mt-[5rem] gap-2'>
           <div className='flex flex-col'>
-            <Input className='h-9 -mt-3' label='Enter your first name' type='text' placeholder='First name' {...register('firstName', {required: true})} ></Input>
+            <Input 
+              className='h-9 -mt-3' 
+              label='First Name' 
+              type='text' 
+              placeholder='Enter your first name' 
+              {...register('firstName', {
+                required: 'First name is required',
+                minLength: { value: 2, message: 'First name must be at least 2 characters' }
+              })} 
+            />
           </div>
           <div className='mt-3 flex flex-col'>
-            <Input className='h-9 -mt-3' label='Enter you last name' type='text' placeholder='Last name' {...register('lastName')}></Input>
+            <Input 
+              className='h-9 -mt-3' 
+              label='Last Name' 
+              type='text' 
+              placeholder='Enter your last name' 
+              {...register('lastName', {
+                required: 'Last name is required'
+              })}
+            />
           </div>
           <div className='mt-3 flex flex-col'>
-            <Input className='h-9 -mt-3' label='Enter your email' type='email' placeholder='example@example.com' {...register('email', {required: true})}></Input>
+            <Input 
+              className='h-9 -mt-3' 
+              label='Email Address' 
+              type='email' 
+              placeholder='Enter your email address' 
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Invalid email address'
+                }
+              })}
+            />
           </div>
           <div className='mt-3 flex flex-col'>
             <Input className='h-9 -mt-3' label='Enter your Password' type='password' placeholder='Password' {...register('password', {required: true})}></Input>
           </div>
           
           <div className='py-2'>
-            <label htmlFor="" className='font-medium text-base relative top-2'>Vehicle information</label>
-            <div className='mt-3 grid grid-cols-2 gap-2' {...register('vehicle', {required: true})}>
-              <Input className='h-9' type='text' placeholder='color' {...register('vehicle.color', {required: true})}></Input>
-              <Input className='h-9' type='text' placeholder='plate' {...register('vehicle.plate', {required: true})}></Input>
-              <Input className='h-9' type='text' placeholder='capicity' {...register('vehicle.capicity', {required: true})}></Input>
-              <select defaultValue='Select one' className='bg-gray-100 border-2 rounded h-9' name="vehicleType" id={vehicleId} {...register('vehicle.vehicleType', {required: true})}>
-                <option value="car">car</option>
-                <option value="auto">auto</option>
-                <option value="moterbike">moterbike</option>
+            <label htmlFor="" className='font-medium text-base relative top-2'>Vehicle Information</label>
+            <div className='mt-3 grid grid-cols-2 gap-2'>
+              <Input 
+                className='h-9' 
+                type='text' 
+                placeholder='Vehicle Color' 
+                {...register('vehicle.color', {required: 'Vehicle color is required'})}
+              />
+              <Input 
+                className='h-9' 
+                type='text' 
+                placeholder='License Plate' 
+                {...register('vehicle.plate', {required: 'License plate is required'})}
+              />
+              <Input 
+                className='h-9' 
+                type='number' 
+                placeholder='Seating Capacity' 
+                {...register('vehicle.capicity', {
+                  required: 'Capacity is required',
+                  min: { value: 1, message: 'Minimum capacity is 1' }
+                })}
+              />
+              <select 
+                className='bg-gray-100 border-2 rounded h-9' 
+                {...register('vehicle.vehicleType', {required: 'Vehicle type is required'})}
+              >
+                <option value="">Select Vehicle Type</option>
+                <option value="car">Car</option>
+                <option value="auto">Auto</option>
+                <option value="moterbike">Motorbike</option>
               </select>
             </div>
 

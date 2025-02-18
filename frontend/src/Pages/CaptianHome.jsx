@@ -9,10 +9,12 @@ import ConfirmPopupRide from '../components/ConfirmPopupRide.jsx'
 import { useSelector, useDispatch } from 'react-redux'
 import { connectSocket, disconnectSocket, receiveMessage, sendMessage } from '../store/SocketSlice.js'
 import socket from '../services/Socket.service.js'
+import LiveTracking from '../components/liveTraking.jsx'
 
 function CaptianHome() {
   const [ridePopupPanel, setRidePopupPanel] = useState(false);
   const [confirmRidePopupPanel, setConfirmRidePopupPanel] = useState(false);
+  const [otp, setOtp] = useState(null)
   const [ride, setRide] = useState(null);
   const ridePopupPanelRef = useRef(null);
   const confirmRidePopupPanelRef = useRef(null);
@@ -32,6 +34,11 @@ function CaptianHome() {
       if(message) {
         setRidePopupPanel(true);
       }
+    });
+
+    socket.on('ride-confirmed', (message) => {
+      dispatch(receiveMessage(message));
+      setOtp(message.otp);
     });
 
     sendMessage({ userType: 'captian', userId: captian._id });
@@ -100,7 +107,7 @@ function CaptianHome() {
         </div>
       </div>
       <div className='h-3/5'>
-        <img className='h-full object-cover' src="https://storage.googleapis.com/support-forums-api/attachment/thread-146048858-12639125651610213305.PNG" alt="map" />
+        <LiveTracking />
       </div>
       <div className='h-2/5 p-5'>
         <CaptianDetails />
@@ -114,7 +121,7 @@ function CaptianHome() {
 
       <div ref={confirmRidePopupPanelRef} className='h-screen bg-white flex top-0 z-11 fixed translate-y-full flex-col w-full p-4'>
         <h3 className='absolute top-0 text-xl font-bold py-4 mt-10'>Confirm your Ride </h3>
-        <ConfirmPopupRide ride={ride} setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />
+        <ConfirmPopupRide otp={otp} ride={ride} setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />
       </div>
     </div>
   )

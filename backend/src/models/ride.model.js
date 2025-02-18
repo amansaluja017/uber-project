@@ -53,7 +53,8 @@ const rideSchema = new Schema(
         otp: {
             type: String,
             default: null,
-            required: true
+            required: true,
+            select: false
         }
     },
      {timestamps: true}

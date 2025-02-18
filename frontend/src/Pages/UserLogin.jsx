@@ -37,13 +37,32 @@ function UserLogin() {
       </div>
       <form className='py-6' onSubmit={handleSubmit(submit)}>
         <div className='flex flex-col'>
-          <Input label='Enter your email' type="email" placeholder='example@example.com' {...register('email', { required: true })}/>
+          <Input 
+            label='Email Address' 
+            type="email" 
+            placeholder='Enter your email address' 
+            {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Invalid email address'
+              }
+            })}
+          />
         </div>
 
-        {error && <p>{error}</p>}
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
         <div className='py-4 flex flex-col'>
-          <Input label='Enter your Password' type="password" placeholder='password' {...register('password', { required: true })}  />
+          <Input 
+            label='Password' 
+            type="password" 
+            placeholder='Enter your password' 
+            {...register('password', {
+              required: 'Password is required',
+              minLength: { value: 6, message: 'Password must be at least 6 characters' }
+            })}
+          />
         </div>
 
         <div>

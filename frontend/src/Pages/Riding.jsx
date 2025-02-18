@@ -6,6 +6,7 @@ import socket from '../services/Socket.service';
 import { useSelector, useDispatch } from 'react-redux';
 import { connectSocket, disconnectSocket, receiveMessage } from '../store/SocketSlice';
 import { useNavigate } from 'react-router-dom';
+import LiveTracking from '../components/liveTraking';
 
 function Riding() {
     const dispatch = useDispatch();
@@ -38,7 +39,7 @@ function Riding() {
                 <Link to='/home'><i className="ri-home-line"></i></Link>
             </div>
             <div className='h-1/2 contain-content'>
-                <img className='' src="https://storage.googleapis.com/support-forums-api/attachment/thread-146048858-12639125651610213305.PNG" alt="map" />
+                <LiveTracking />
             </div>
             <div className='h-1/2 p-5'>
                 <div>

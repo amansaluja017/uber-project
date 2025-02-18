@@ -102,6 +102,11 @@ export const confirmRide = asyncHandler(async (req, res) => {
             data: ride
         });
 
+        sendMessagetoSocketId(ride.captian.socketId, {
+            event: 'ride-confirmed',
+            data: ride
+        });
+
         return res.status(200).json(new ApiResponse(200, ride, "Ride confirmed successfully"));
     } catch (error) {
         console.error(error);

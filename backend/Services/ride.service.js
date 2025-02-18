@@ -79,7 +79,7 @@ export const confirmTheRide = async ({ rideId, captian }) => {
 
     await Ride.findOneAndUpdate({ _id: rideId }, { status: 'accepted', captian }, { new: true });
 
-    const ride = await Ride.findOne({ _id: rideId }).populate('user').populate('captian');
+    const ride = await Ride.findOne({ _id: rideId }).select('+otp').populate('user').populate('captian');
 
     if (!ride) {
         throw new ApiError(404, "Ride not found");

@@ -5,7 +5,7 @@ const Input = forwardRef(function Input({
   type = "text",
   placeholder = 'type here...',
   className = '',
-  value = '',
+  // value = '',
   ...props
 }, ref) {
   const id = useId();
@@ -18,7 +18,7 @@ const Input = forwardRef(function Input({
         id={id} 
         type={type} 
         placeholder={placeholder} 
-        value={value}
+        // value={value}
         {...props} />
     </>
   )

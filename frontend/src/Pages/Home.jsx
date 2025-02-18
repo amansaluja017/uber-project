@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { connectSocket, disconnectSocket, receiveMessage, sendMessage } from '../store/SocketSlice.js'
 import socket from '../services/Socket.service.js'
 import { useNavigate } from 'react-router-dom'
+import LiveTracking from '../components/liveTraking.jsx'
 
 function Home() {
   const [openPanel, setOpenPanel] = useState(false);
@@ -39,11 +40,13 @@ function Home() {
   const confirmVehiclePanelRef = useRef(null);
   const lookingDriverPanelRef = useRef(null);
   const waitingForDriverPanelRef = useRef(null);
+  const inputRef = useRef(null);
+  const suggestionRef = useRef(null);
 
   const user = useSelector(state => state.user.userData);
   const navigate = useNavigate();
 
-  const {isConnected, messages} = useSelector(state => state.socket);
+  const { isConnected, messages } = useSelector(state => state.socket);
   const dispatch = useDispatch();
 
   const pickup = typeof start === "object" ? start.name : start;
@@ -52,7 +55,7 @@ function Home() {
   useEffect(() => {
     connectSocket(dispatch);
 
-    sendMessage({userType: 'user', userId: user._id});
+    sendMessage({ userType: 'user', userId: user._id });
 
     socket.on('ride-confirmed', (message) => {
       setWaitingForDriverPanel(true);
@@ -63,7 +66,7 @@ function Home() {
     socket.on('ride-started', (message) => {
       setWaitingForDriverPanel(false);
       dispatch(receiveMessage(message));
-      navigate('/riding', {state: {ride: message}});
+      navigate('/riding', { state: { ride: message } });
     });
 
     return () => {
@@ -84,7 +87,7 @@ function Home() {
       const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/maps/get-suggestions`, {
         params: { input: value }
       });
-  
+
       setStartLocation(data.data);
     } catch (error) {
       setStartLocation([]);
@@ -104,7 +107,7 @@ function Home() {
       const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/maps/get-suggestions`, {
         params: { input: value }
       });
-      
+
       setEndLocation((data.data && Array.isArray(data.data)) ? data.data : data);
     } catch (error) {
       setEndLocation([]);
@@ -115,7 +118,7 @@ function Home() {
     setVehiclePanel(true);
     setOpenPanel(false);
 
-    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/get-price` , {
+    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/get-price`, {
       params: {
         start: `${start.lat},${start.lng}`,
         end: `${end.lat},${end.lng}`,
@@ -123,13 +126,13 @@ function Home() {
     })
     setFare(response.data.data);
   }
-  
+
   async function createRide() {
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/create`, {
+    await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/create`, {
       start,
       end,
       vehicleType
-    }, {withCredentials: true});
+    }, { withCredentials: true });
   }
 
   useGSAP(() => {
@@ -200,42 +203,57 @@ function Home() {
   return (
     <div className='h-screen'>
 
-      <div className='absolute'>
-        <img className='w-[4rem] h-[4rem]' src="https://brandlogos.net/wp-content/uploads/2021/12/uber-brandlogo.net_.png" alt="logo" />
-      </div>
-
       <div className='h-full'>
-        <img className='h-full object-cover' src="https://storage.googleapis.com/support-forums-api/attachment/thread-146048858-12639125651610213305.PNG" alt="map" />
+        <div className='absolute z-10'>
+          <img className='w-[4rem] h-[4rem]' src="https://brandlogos.net/wp-content/uploads/2021/12/uber-brandlogo.net_.png" alt="logo" />
+        </div>
+        <div className='h-full'>
+          <LiveTracking />
+        </div>
+
       </div>
 
       <div>
-        <div className='flex flex-col justify-end absolute top-0 h-screen'>
-          <div className='h-[30%] p-3 bg-white'>
+        <div ref={inputRef} className='flex flex-col justify-end top-0 h-screen z-20'>
+          <div ref={suggestionRef} className='h-[30%] p-3 bg-white absolute bottom-0'>
             <h5 className='text-2xl' onClick={() => { setOpenPanel(false) }}>
               <i ref={panelCloseRef} className="ri-arrow-down-wide-line"></i>
             </h5>
             <h3 ref={find} className='text-xl font-bold'>Find a trip</h3>
             <form className='relative'>
               <div className='h-13 absolute w-[.78%] bg-black top-[30%] left-[4%] rounded-full'></div>
-              <Input 
-                onChange={handlePickup} 
-                onClick={() => { setOpenPanel(true), setActiveField('start') }} 
-                type='text' 
-                placeholder='Add a pick up location' 
-                className='h-9 px-7 mt-3 w-full' 
+              <Input
+                onChange={handlePickup}
+                onClick={() => {
+                  setOpenPanel(true)
+                  setActiveField('start')
+                  inputRef.current.classList.add('absolute')
+                  suggestionRef.current.classList.remove('absolute')
+                }}
+                type='text'
+                placeholder='Add a pick up location'
+                className='h-9 px-7 mt-3 w-full'
                 value={pickup}>
               </Input>
-              <Input 
-                onChange={handleDestination} 
-                onClick={() => { setOpenPanel(true), setActiveField('end') }} 
-                type='text' 
-                placeholder='Enter your destination' 
-                className='h-9 mt-4 w-full px-7 ' 
+              <Input
+                onChange={handleDestination}
+                onClick={() => {
+                  setOpenPanel(true)
+                  setActiveField('end')
+                  inputRef.current.classList.add('absolute')
+                  suggestionRef.current.classList.remove('absolute')
+                }}
+                type='text'
+                placeholder='Enter your destination'
+                className='h-9 mt-4 w-full px-7 '
                 value={destination}>
               </Input>
             </form>
 
-            <Button onClick={() => {findTrip()}} className='w-full'>Find Trip</Button>
+            <Button onClick={() => {
+              findTrip()
+              inputRef.current.classList.remove('z-20')
+            }} className='w-full'>Find Trip</Button>
 
           </div>
           <div ref={panelRef} className='bg-white h-[70%] p-6'>

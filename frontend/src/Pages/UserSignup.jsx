@@ -35,16 +35,51 @@ function UserSignup() {
       </div>
         <form onSubmit={handleSubmit(submit)} className='p-7 flex flex-col justify-around'>
           <div className='flex flex-col'>
-            <Input label='Enter your first name' type='text' placeholder='First name' {...register('firstName', {required: true})} ></Input>
+            <Input 
+              label='First Name' 
+              type='text' 
+              placeholder='Enter your first name' 
+              {...register('firstName', {
+                required: 'First name is required',
+                minLength: { value: 2, message: 'First name must be at least 2 characters' }
+              })} 
+            />
           </div>
           <div className='mt-3 flex flex-col'>
-            <Input label='Enter you last name' type='text' placeholder='Last name' {...register('lastName')}></Input>
+            <Input 
+              label='Last Name' 
+              type='text' 
+              placeholder='Enter your last name' 
+              {...register('lastName', {
+                required: 'Last name is required',
+                minLength: { value: 2, message: 'Last name must be at least 2 characters' }
+              })}
+            />
           </div>
           <div className='mt-3 flex flex-col'>
-            <Input label='Enter your email' type='email' placeholder='example@example.com' {...register('email', {required: true})}></Input>
+            <Input 
+              label='Email Address' 
+              type='email' 
+              placeholder='Enter your email address' 
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Invalid email address'
+                }
+              })}
+            />
           </div>
           <div className='mt-3 flex flex-col'>
-            <Input label='Enter your Password' type='password' placeholder='Password' {...register('password', {required: true})}></Input>
+            <Input 
+              label='Password' 
+              type='password' 
+              placeholder='Enter your password' 
+              {...register('password', {
+                required: 'Password is required',
+                minLength: { value: 6, message: 'Password must be at least 6 characters' }
+              })}
+            />
           </div>
           <div>
             <Button className='w-full'>Sign up</Button>

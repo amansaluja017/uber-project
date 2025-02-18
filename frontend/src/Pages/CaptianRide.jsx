@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import { connectSocket } from '../store/SocketSlice'
 import { useDispatch } from 'react-redux'
 import socket from '../services/Socket.service'
+import LiveTracking from '../components/liveTraking'
 
 function CaptianRide() {
     const [finishRidePanel, setFinishRidePanel] = useState(false);
@@ -60,7 +61,7 @@ function CaptianRide() {
                 </div>
             </div>
             <div className='h-[85%]'>
-                <img className='h-full object-cover' src="https://storage.googleapis.com/support-forums-api/attachment/thread-146048858-12639125651610213305.PNG" alt="map" />
+                <LiveTracking className='h-full object-cover' />
             </div>
             <div className='h-[15%] p-5 bg-yellow-500 flex flex-col justify-center'>
                 <h5 onClick={() => {setFinishRidePanel(true)}} className='text-center font-bold text-xl'><i className="ri-arrow-up-wide-line"></i></h5>
