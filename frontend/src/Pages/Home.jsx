@@ -46,20 +46,21 @@ function Home() {
   const {isConnected, messages} = useSelector(state => state.socket);
   const dispatch = useDispatch();
 
+  const pickup = typeof start === "object" ? start.name : start;
+  const destination = typeof end === "object" ? end.name : end;
+
   useEffect(() => {
     connectSocket(dispatch);
 
     sendMessage({userType: 'user', userId: user._id});
 
     socket.on('ride-confirmed', (message) => {
-      console.log('confirm ride received', message);
       setWaitingForDriverPanel(true);
       dispatch(receiveMessage(message));
       setRide(message);
     });
 
     socket.on('ride-started', (message) => {
-      console.log('ride started received', message);
       setWaitingForDriverPanel(false);
       dispatch(receiveMessage(message));
       navigate('/riding', {state: {ride: message}});
@@ -86,7 +87,6 @@ function Home() {
   
       setStartLocation(data.data);
     } catch (error) {
-      console.error("Error fetching pickup suggestions:", error);
       setStartLocation([]);
     }
   };
@@ -107,7 +107,6 @@ function Home() {
       
       setEndLocation((data.data && Array.isArray(data.data)) ? data.data : data);
     } catch (error) {
-      console.error("Error fetching destination suggestions:", error);
       setEndLocation([]);
     }
   };
@@ -123,7 +122,6 @@ function Home() {
       }
     })
     setFare(response.data.data);
-    console.log(response.data.data);
   }
   
   async function createRide() {
@@ -132,7 +130,6 @@ function Home() {
       end,
       vehicleType
     }, {withCredentials: true});
-    console.log(response)
   }
 
   useGSAP(() => {
@@ -220,14 +217,22 @@ function Home() {
             <h3 ref={find} className='text-xl font-bold'>Find a trip</h3>
             <form className='relative'>
               <div className='h-13 absolute w-[.78%] bg-black top-[30%] left-[4%] rounded-full'></div>
-              <Input
-               onChange={(e) => {
-                handlePickup(e)
-               }} onClick={() => { setOpenPanel(true), setActiveField('start') }} type='text' placeholder='Add a pick up location' className='h-9 px-7 mt-3 w-full' value={start.name}></Input>
-              <Input
-               onChange={(e) => {
-                handleDestination(e)
-               }} onClick={() => { setOpenPanel(true), setActiveField('end') }} type='text' placeholder='Enter your destination' className='h-9 mt-4 w-full px-7 ' value={end.name}></Input>
+              <Input 
+                onChange={handlePickup} 
+                onClick={() => { setOpenPanel(true), setActiveField('start') }} 
+                type='text' 
+                placeholder='Add a pick up location' 
+                className='h-9 px-7 mt-3 w-full' 
+                value={pickup}>
+              </Input>
+              <Input 
+                onChange={handleDestination} 
+                onClick={() => { setOpenPanel(true), setActiveField('end') }} 
+                type='text' 
+                placeholder='Enter your destination' 
+                className='h-9 mt-4 w-full px-7 ' 
+                value={destination}>
+              </Input>
             </form>
 
             <Button onClick={() => {findTrip()}} className='w-full'>Find Trip</Button>

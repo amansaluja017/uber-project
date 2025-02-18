@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import {Button} from '../components/index'
 
-function FinishRide() {
+function FinishRide(props) {
 
     return (
         <div>
@@ -9,7 +10,7 @@ function FinishRide() {
                 <div className='flex justify-between mt-20 bg-yellow-300 py-4 w-full rounded-xl'>
                     <div className='flex justify-center items-center gap-2 px-2'>
                         <img className='h-10 w-10 object-contain rounded-full' src="https://img.freepik.com/free-vector/smiling-young-man-illustration_1308-174669.jpg" alt="avatar" />
-                        <h3 className='font-semibold'>Driver's name</h3>
+                        <h3 className='font-semibold'>{props.rideData?.user?.firstName + " " + props.rideData?.user?.lastName}</h3>
                     </div>
 
                     <div className='text-start px-2 flex justify-center items-center'>
@@ -22,8 +23,8 @@ function FinishRide() {
                             <i className="ri-map-pin-fill"></i>
                         </div>
                         <div className='ml-3'>
-                            <h3 className='font-semibold text-xl'>562/11-A</h3>
-                            <p className='text-xs text-gray-600'>Lorem ipsum dolor sit amet, consectetur</p>
+                            <h3 className='font-semibold text-xl'>Pickup</h3>
+                            <p className='text-xs text-gray-600'>{props.rideData?.start}</p>
                         </div>
                     </div>
 
@@ -32,8 +33,8 @@ function FinishRide() {
                             <i className="ri-map-pin-3-fill"></i>
                         </div>
                         <div className='ml-3'>
-                            <h3 className='font-semibold text-xl'>Third Wave Coffee</h3>
-                            <p className='text-xs text-gray-600'>Lorem ipsum dolor sit amet, consectetur</p>
+                            <h3 className='font-semibold text-xl'>Destination</h3>
+                            <p className='text-xs text-gray-600'>{props.rideData?.end}</p>
                         </div>
                     </div>
 
@@ -42,13 +43,13 @@ function FinishRide() {
                             <i className="ri-cash-line"></i>
                         </div>
                         <div className='ml-3'>
-                            <h3 className='font-semibold text-xl'>₹193.20</h3>
+                            <h3 className='font-semibold text-xl'>₹{props.rideData?.fare}</h3>
                             <p className='text-xs text-gray-600'>Cash Cash</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <Link to='/captian-home' className='bg-green-700 mt-8 text-white w-full py-2 rounded flex items-center justify-center font-bold'>Finish</Link>
+            <Button onClick={() => {props.endRide()}} className='bg-green-700 w-full'>Finish</Button>
             
         </div>
     )

@@ -4,17 +4,33 @@ import { Link, useLocation } from 'react-router-dom'
 import 'remixicon/fonts/remixicon.css'
 import socket from '../services/Socket.service';
 import { useSelector, useDispatch } from 'react-redux';
-import { connectSocket } from '../store/SocketSlice';
+import { connectSocket, disconnectSocket, receiveMessage } from '../store/SocketSlice';
+import { useNavigate } from 'react-router-dom';
 
 function Riding() {
     const dispatch = useDispatch();
     const {state} = useLocation();
     const {ride} = state || {};
-
-    console.log(ride);
+    const navigate = useNavigate();
     
     const { isConnected, messages } = useSelector(state => state.socket);
-    console.log('messages', messages);
+
+    useEffect(() => {
+        connectSocket(dispatch);
+
+        socket.off('rideEnded');
+        
+        socket.on('rideEnded', (message) => {
+            console.log('ride ended received', message);
+            dispatch(receiveMessage(message));
+            navigate('/home');
+        });
+
+        return () => {
+            socket.off('rideEnded');
+            disconnectSocket(dispatch);
+        }
+    }, [dispatch, navigate]);
 
     return (
         <div className='h-screen'>

@@ -30,8 +30,7 @@ function ConfirmPopupRide(props) {
             if(response.status === 200) {
                 props.setConfirmRidePopupPanel(false);
                 props.setRidePopupPanel(false);
-                navigate('/captian-riding');
-                console.log('status 200', response);
+                navigate('/captian-riding', {state: {ride: response.data.data}});
             }
         } catch (error) {
             console.error('Error starting ride:', error);

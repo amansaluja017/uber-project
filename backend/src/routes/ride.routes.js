@@ -1,7 +1,7 @@
 import express from 'express';
 import {body, query} from 'express-validator'
 import { verifyJWT, verifyJWTCaptian } from '../middlewares/auth.middleware.js';
-import { confirmRide, createRide, getPrice, startRide } from '../controllers/ride.controller.js';
+import { confirmRide, createRide, endRide, getPrice, startRide } from '../controllers/ride.controller.js';
 
 const router = express.Router();
 
@@ -23,6 +23,10 @@ router.route('/confirm').post(verifyJWTCaptian, confirmRide,
 router.route('/start-ride').get(verifyJWTCaptian, startRide,
     query('otp').isLength({min: 6}).withMessage('Invalid OTP'),
     query('rideId').isLength({min: 1}).withMessage('Invalid ride ID')
+);
+
+router.route('/end-ride').post(verifyJWTCaptian, endRide,
+    body('rideId').isLength({min: 1}).isMongoId().withMessage('Invalid ride id')
 );
 
 export default router;

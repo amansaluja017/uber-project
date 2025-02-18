@@ -43,7 +43,6 @@ export const connectSocket = (dispatch) => {
     });
 
     socket.on('message', (message) => {
-        console.log('message received', message)
         dispatch(receiveMessage(message));
     });
 

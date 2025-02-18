@@ -705,3 +705,29 @@ On success, the endpoint returns a JSON response with status code 200 OK includi
 - **400 Bad Request:** Returned when required fields are missing or validation fails.
 - **401 Unauthorized:** Returned when the JWT token is missing or invalid.
 - **500 Internal Server Error:** Indicates an unexpected server error during ride start.
+
+## Ride End API Endpoint Documentation
+
+### Endpoint: `/api/v1/rides/end-ride`
+- **Description:** Ends an active ride.
+- **HTTP Method:** `POST`
+- **Authentication:** JWT required.
+- **Request Body:** JSON including:
+  - `rideId` (string, required, valid MongoDB ID)
+- **Successful Response:** 200 OK with confirmation message.
+- **Error Responses:**
+  - 400 Bad Request: when rideId is missing/invalid.
+  - 401 Unauthorized: when JWT is missing or invalid.
+  - 500 Internal Server Error: on server failure.
+
+## Socket.io API Documentation
+
+### Overview
+This section documents the real-time communication using Socket.io.
+
+### Key Events
+- **connection:** Triggered when a client connects.
+- **join:** Clients emit with `userId` and `userType` to register their socket.
+- **update-location-captian:** Captains emit their updated location (latitude and longitude).
+- **disconnect:** Triggered when a client disconnects.
+- **sendMessagetoSocketId:** Server helper to send events with data to a specific socket.

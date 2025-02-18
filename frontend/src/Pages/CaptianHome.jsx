@@ -26,7 +26,6 @@ function CaptianHome() {
     connectSocket(dispatch);
 
     socket.on('message', (message) => {
-      console.log('message received', message);
       setRide(message);
       dispatch(receiveMessage(message));
 
@@ -68,7 +67,6 @@ function CaptianHome() {
       rideId: ride._id,
       captainId: captian._id
     }, {withCredentials: true});
-    console.log(response)
   };
 
 

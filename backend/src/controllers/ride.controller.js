@@ -1,11 +1,11 @@
-import { confirmTheRide, createNewRide, startTheRide } from "../../Services/ride.service.js";
+import { confirmTheRide, createNewRide, endTheRide, startTheRide } from "../../Services/ride.service.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from '../utils/ApiError.js'
 import { validationResult } from "express-validator";
 import { getFare } from "../../Services/ride.service.js";
 import getAddressCoordinates, { getCaptiansInTheRadius } from "../../Services/map.service.js";
-import { sendMessagetoSocketId } from "../socket.js";
+import { sendMessagetoSocketId, getIO } from "../socket.js";
 import { User } from "../models/user.model.js";
 import { Ride } from "../models/ride.model.js";
 
@@ -120,7 +120,6 @@ export const startRide = asyncHandler(async (req, res) => {
 
     try {
         const { rideId, otp } = req.query;
-        console.log(rideId, otp)
 
         if (!rideId) {
             throw new ApiError(400, "rideId is required");
@@ -131,8 +130,6 @@ export const startRide = asyncHandler(async (req, res) => {
         }
 
         const ride = await startTheRide({ rideId, otp, captian: req.captian });
-        console.log(ride);
-
         if (!ride) {
             throw new ApiError(400, "Ride not found or OTP is incorrect");
         }
@@ -147,4 +144,42 @@ export const startRide = asyncHandler(async (req, res) => {
         console.error(error);
         throw new ApiError(500, "internal error");
     }
+});
+
+export const endRide = asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        throw new ApiError(
+            400,
+            errors.array().map((err) => err.msg)
+        );
+    }
+
+    const { rideId } = req.body;
+
+    if (!rideId) {
+        throw new ApiError(404, "rideId not found")
+    }
+
+    try {
+        const ride = await endTheRide({ rideId, captian: req.captian });
+
+        if (!ride) {
+            throw new ApiError(404, "ride not found")
+        }
+
+        sendMessagetoSocketId(ride.user.socketId, {
+            event: 'rideEnded',
+            data: ride
+        });
+        // Broadcast to all connections
+        getIO().emit('rideEnded', ride);
+
+        return res.status(200).json(new ApiResponse(200, ride, "ride ended successfully"));
+    } catch (error) {
+        console.error(error)
+        throw new ApiError(500, "internal error")
+    }
+
+
 })

@@ -172,3 +172,25 @@ This project is a ride-sharing application built with React, Redux, and React Ro
   - **Ride Route:** Shows the pickup and destination locations.
   - **Fare Information:** Displays the fare amount and payment method.
   - **Payment Button:** Allows users to make a payment for the ride.
+
+## Page Documentation Updates
+
+### Home Page (`/home`)
+- Serves as the user's main dashboard.
+- Features a map view, trip search, vehicle selection, and ride confirmation.
+- Enables users to choose pickup and destination locations and view fare estimates.
+
+### Riding Page (`/riding`)
+- Displays live ride details for the user.
+- Shows driver information, vehicle details, and fare.
+- Includes a payment interface and automatically routes back to home after ride completion.
+
+### Captian Home Page (`/captian-home`)
+- Acts as the main dashboard for logged-in captains.
+- Displays current location, ride request popups, and captain details.
+- Facilitates real-time location updates and ride confirmation.
+
+### Captian Ride Page (`/captian-ride`)
+- Provides the in-ride interface for captains.
+- Displays a live map, ride progress, and key ride details.
+- Offers controls to end the ride and trigger the final ride-completion process.

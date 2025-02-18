@@ -19,7 +19,7 @@ export function initializeSocket(server) {
             const {userId, userType} = data;
 
             if(userType === 'user') {
-                const user = await User.findByIdAndUpdate(userId, {
+                await User.findByIdAndUpdate(userId, {
                     socketId: socket.id
                 })
             } else if( userType === 'captian') {
@@ -42,12 +42,16 @@ export function initializeSocket(server) {
                     lng: location.lng
                 }
             })
-        })
+        });
 
         socket.on('disconnect', () => {
             console.log('Connection closed', socket.id)
         })
     });
+}
+
+export function getIO() {
+    return io;
 }
 
 export function sendMessagetoSocketId(socketId, message) {

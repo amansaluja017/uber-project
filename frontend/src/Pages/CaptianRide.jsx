@@ -1,13 +1,43 @@
-import React, { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { Button } from '../components'
 import FinishRide from '../components/FinishRide'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { connectSocket } from '../store/SocketSlice'
+import { useDispatch } from 'react-redux'
+import socket from '../services/Socket.service'
 
 function CaptianRide() {
     const [finishRidePanel, setFinishRidePanel] = useState(false);
     const finishRidePanelRef = useRef();
+    const location = useLocation();
+    const rideData = location?.state?.ride;
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+      connectSocket(dispatch);
+    })
+
+    const endRide = async () => {
+      try {
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/end-ride`, {
+          rideId: rideData._id
+        }, {
+          withCredentials: true
+        });
+        if(response.status === 200) {
+          // Emit "ride-ended" event with relevant data
+          socket.emit('ride-ended', { rideId: rideData._id, data: response.data.data });
+          navigate('/captian-home');
+        }
+      } catch (error) {
+        console.error('Error ending ride:', error);
+      }
+    }
 
     useGSAP(() => {
         if (finishRidePanel) {
@@ -42,7 +72,7 @@ function CaptianRide() {
             <div ref={finishRidePanelRef} className='h-screen bg-white flex top-[20%] z-11 fixed translate-y-full flex-col w-full p-4'>
                 <h5 onClick={() => {setFinishRidePanel(false)}} className='text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
                 <h3 className='absolute top-0 text-xl font-bold py-4 mt-10'>Finish this Ride </h3>
-                <FinishRide />
+                <FinishRide endRide={endRide} rideData={rideData} />
             </div>
         </div>
     )
