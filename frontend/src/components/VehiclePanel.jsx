@@ -1,6 +1,14 @@
 import React from 'react'
 
 function VehiclePanel(props) {
+  if (props.fare.car === 'undefined' && props.fare.motorbike === 'undefined' && props.fare.auto === 'undefined') {
+    return (
+      <div className='w-full h-screen flex items-center justify-center'>
+        <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-black'></div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <div onClick={() => { props.setconfirmVehiclePanel(true), props.selectVehicle('car') }} className='active:outline-2 border-gray-50 w-full mt-10 rounded-2xl flex items-center'>
@@ -13,8 +21,8 @@ function VehiclePanel(props) {
           <h6 className='text-xs'>affordable and compact rides</h6>
 
         </div>
-        <div>
-          <h3 className='font-bold'>{`₹${props.fare.car}`}</h3>
+        <div className='absolute right-[5%]'>
+          <h3 className='font-bold '>{`₹${props.fare.car}`}</h3>
         </div>
       </div>
       <div onClick={() => { props.setconfirmVehiclePanel(true), props.selectVehicle('motorbike') }} className='active:outline-2 border-gray-50  w-full mt-5 rounded-2xl flex items-center'>
@@ -26,7 +34,7 @@ function VehiclePanel(props) {
           <h6 className='text-sm'>2 min away</h6>
           <h6 className='text-xs'>affordable and compact rides</h6>
         </div>
-        <div>
+        <div className='absolute right-[5%]'>
           <h3 className='font-bold'>{`₹${props.fare.motorbike}`}</h3>
         </div>
       </div>
@@ -40,7 +48,7 @@ function VehiclePanel(props) {
           <h6 className='text-xs'>affordable and compact rides</h6>
 
         </div>
-        <div>
+        <div className='absolute right-[5%]'>
           <h3 className='font-bold'>{`₹${props.fare.auto}`}</h3>
         </div>
       </div>

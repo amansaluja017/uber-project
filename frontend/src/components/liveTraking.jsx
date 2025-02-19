@@ -9,7 +9,6 @@ function LiveTracking() {
   const TOMTOM_API_KEY = import.meta.env.VITE_TOMTOM_API_KEY;
 
   useEffect(() => {
-  
     mapInstance.current = tt.map({
       key: TOMTOM_API_KEY,
       container: mapContainer.current,
@@ -20,22 +19,29 @@ function LiveTracking() {
     // Add marker
     marker.current = new tt.Marker().setLngLat(mapInstance.current.getCenter()).addTo(mapInstance.current);
 
-    // Start watching the user's position
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        marker.current.setLngLat([longitude, latitude]);
-        mapInstance.current.setCenter([longitude, latitude]);
-      },
-      (error) => {
-        console.error('Error obtaining location', error);
-      },
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
-    );
+    // Function to update position
+    const updatePosition = () => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          marker.current.setLngLat([longitude, latitude]);
+          mapInstance.current.setCenter([longitude, latitude]);
+        },
+        (error) => {
+          console.error('Error obtaining location', error);
+        },
+        { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+      );
+    };
 
-   
+    // Update location every 10 seconds
+    const intervalId = setInterval(updatePosition, 10000);
+
+    // Initial position update
+    updatePosition();
+
     return () => {
-      navigator.geolocation.clearWatch(watchId);
+      clearInterval(intervalId);
       if (mapInstance.current) {
         mapInstance.current.remove();
       }

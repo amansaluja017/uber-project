@@ -731,3 +731,151 @@ This section documents the real-time communication using Socket.io.
 - **update-location-captian:** Captains emit their updated location (latitude and longitude).
 - **disconnect:** Triggered when a client disconnects.
 - **sendMessagetoSocketId:** Server helper to send events with data to a specific socket.
+
+# Payment API Endpoints Documentation
+
+## Create Payment Endpoint
+
+### Endpoint: `/create-payment`
+
+#### Description
+Creates a new payment order using the Razorpay payment gateway.
+
+#### HTTP Method
+`POST`
+
+#### Authentication
+This endpoint is protected by JWT authentication. A valid token must be provided.
+
+#### Request Body
+The request should be in JSON format containing:
+
+- **amount** (number, required):  
+  The payment amount in the smallest currency unit (e.g., paise for INR)
+
+- **currency** (string, optional):  
+  The currency code (defaults to INR)
+
+- **receipt** (string, optional):  
+  A unique identifier for the order
+
+#### Example Request
+```json
+{
+    "amount": 1000,
+    "currency": "INR",
+    "receipt": "order_123"
+}
+```
+
+#### Successful Response
+```json
+{
+    "status": 200,
+    "data": {
+        "id": "order_123456789",
+        "entity": "order",
+        "amount": 1000,
+        "amount_paid": 0,
+        "currency": "INR",
+        "receipt": "order_123",
+        "status": "created"
+    },
+    "message": "Payment order created successfully"
+}
+```
+
+#### Error Responses
+- **400 Bad Request:**
+```json
+{
+    "status": 400,
+    "message": "Amount is required"
+}
+```
+- **500 Internal Server Error:**
+```json
+{
+    "status": 500,
+    "message": "Payment creation failed"
+}
+```
+
+## Verify Payment Endpoint
+
+### Endpoint: `/verify-payment`
+
+#### Description
+Verifies a completed payment using Razorpay's signature verification.
+
+#### HTTP Method
+`POST`
+
+#### Authentication
+This endpoint is protected by JWT authentication.
+
+#### Request Body
+The request should be in JSON format containing:
+
+- **rideId** (string, required):  
+  MongoDB ID of the associated ride
+
+- **paymentId** (string, required):  
+  Razorpay payment ID
+
+- **orderId** (string, required):  
+  Razorpay order ID
+
+- **signature** (string, required):  
+  Razorpay generated signature
+
+#### Example Request
+```json
+{
+    "rideId": "65bf12345678901234567890",
+    "paymentId": "pay_123456789",
+    "orderId": "order_123456789",
+    "signature": "generated_signature_string"
+}
+```
+
+#### Successful Response
+```json
+{
+    "status": 200,
+    "data": {
+        "paymentVerify": {
+            "paymentId": "pay_123456789",
+            "orderId": "order_123456789",
+            "signature": "generated_signature_string"
+        },
+        "ride": {
+            // ride details
+        }
+    },
+    "message": "Payment verified successfully"
+}
+```
+
+#### Error Responses
+- **400 Bad Request:**
+```json
+{
+    "status": 400,
+    "message": "All fields are required"
+}
+```
+- **400 Bad Request:**
+```json
+{
+    "status": 400,
+    "message": "Invalid signature"
+}
+```
+- **500 Internal Server Error:**
+```json
+{
+    "status": 500,
+    "message": "Internal server error: Failed to verify payment"
+}
+```

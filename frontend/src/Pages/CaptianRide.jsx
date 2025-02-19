@@ -31,8 +31,6 @@ function CaptianRide() {
           withCredentials: true
         });
         if(response.status === 200) {
-          // Emit "ride-ended" event with relevant data
-          socket.emit('ride-ended', { rideId: rideData._id, data: response.data.data });
           navigate('/captian-home');
         }
       } catch (error) {

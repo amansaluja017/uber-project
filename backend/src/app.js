@@ -22,10 +22,12 @@ import userRoutes from "./routes/user.routes.js";
 import captianRoutes from "./routes/captian.routes.js";
 import mapsRoutes from "./routes/maps.routes.js";
 import rideRoutes from "./routes/ride.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/captian", captianRoutes);
 app.use("/api/v1/maps", mapsRoutes);
 app.use("/api/v1/rides", rideRoutes);
+app.use("/api/v1/payments", paymentRoutes);
 
 export { app };

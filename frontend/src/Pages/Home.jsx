@@ -16,7 +16,7 @@ import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { connectSocket, disconnectSocket, receiveMessage, sendMessage } from '../store/SocketSlice.js'
 import socket from '../services/Socket.service.js'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import LiveTracking from '../components/liveTraking.jsx'
 
 function Home() {
@@ -45,8 +45,6 @@ function Home() {
 
   const user = useSelector(state => state.user.userData);
   const navigate = useNavigate();
-
-  const { isConnected, messages } = useSelector(state => state.socket);
   const dispatch = useDispatch();
 
   const pickup = typeof start === "object" ? start.name : start;
@@ -193,6 +191,9 @@ function Home() {
       gsap.to(waitingForDriverPanelRef.current, {
         transform: 'translateY(0)'
       })
+      gsap.to(lookingDriverPanelRef.current, {
+        transform: 'translateY(100%)'
+      })
     } else {
       gsap.to(waitingForDriverPanelRef.current, {
         transform: 'translateY(100%)'
@@ -204,8 +205,11 @@ function Home() {
     <div className='h-screen'>
 
       <div className='h-full'>
-        <div className='absolute z-10'>
+        <div className='absolute z-10 flex items-center justify-between w-full'>
           <img className='w-[4rem] h-[4rem]' src="https://brandlogos.net/wp-content/uploads/2021/12/uber-brandlogo.net_.png" alt="logo" />
+          <div className='flex h-8 w-8 z-10 justify-center items-center'>
+            <Link to='/logout'><i className="bg-white p-1 rounded-full ri-logout-box-r-line"></i></Link>
+          </div>
         </div>
         <div className='h-full'>
           <LiveTracking />
@@ -264,26 +268,26 @@ function Home() {
       </div>
 
       <div ref={vehiclePanelRef} className='h-screen bg-white flex top-[30%] translate-y-full fixed flex-col w-full p-4'>
-        <h3 className='absolute top-0 text-xl font-bold py-4'>Choose a Vehicle </h3>
-        <h5 onClick={() => { setVehiclePanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
+        <h3 className='absolute top-3 text-xl font-bold py-4'>Choose a Vehicle </h3>
+        <h5 onClick={() => { setVehiclePanel(false) }} className='relative bottom-[1rem] text-center font-medium text-2xl'><i className="text-gray-300 ri-arrow-down-wide-fill"></i></h5>
         <VehiclePanel setconfirmVehiclePanel={setconfirmVehiclePanel} fare={fare} selectVehicle={setVehicleType} />
       </div>
 
       <div ref={confirmVehiclePanelRef} className='h-screen bg-white flex top-[30%] translate-y-full fixed flex-col w-full p-4'>
-        <h3 className='absolute top-0 text-xl font-bold py-4'>Confirm your Ride </h3>
-        <h5 onClick={() => { setconfirmVehiclePanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
+        <h3 className='absolute top-3 text-xl font-bold py-4'>Confirm your Ride </h3>
+        <h5 onClick={() => { setconfirmVehiclePanel(false) }} className='relative bottom-[1rem] text-center font-medium text-2xl'><i className="text-gray-300 ri-arrow-down-wide-fill"></i></h5>
         <ConfirmVehcile vehicleType={vehicleType} start={start} end={end} fare={fare} createRide={createRide} setconfirmVehiclePanel={setconfirmVehiclePanel} setlookingDriverPanel={setlookingDriverPanel} />
       </div>
 
       <div ref={lookingDriverPanelRef} className='h-screen bg-white flex top-[30%] translate-y-full fixed flex-col w-full p-4'>
-        <h3 className='absolute top-0 text-xl font-bold py-4'>Looking for a driver </h3>
-        <h5 onClick={() => { setlookingDriverPanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
+        <h3 className='absolute top-3 text-xl font-bold py-4'>Looking for a driver </h3>
+        <h5 onClick={() => { setlookingDriverPanel(false) }} className='relative bottom-[1rem] text-center font-bold text-2xl'><i className="text-gray-300 ri-arrow-down-wide-fill"></i></h5>
         <LookingForDriver vehicleType={vehicleType} start={start} end={end} fare={fare} />
       </div>
 
       <div ref={waitingForDriverPanelRef} className='h-screen bg-white flex top-[30%] fixed flex-col translate-y-full w-full p-4'>
-        <h3 className='absolute top-0 text-xl font-bold py-4'>Driver's details </h3>
-        <h5 onClick={() => { setWaitingForDriverPanel(false) }} className='relative bottom-[1rem] text-center font-bold text-xl'><i className="ri-arrow-down-wide-fill"></i></h5>
+        <h3 className='absolute top-3 text-xl font-bold py-4'>Driver's details </h3>
+        <h5 onClick={() => { setWaitingForDriverPanel(false) }} className='relative bottom-[1rem] text-center font-medium text-2xl'><i className="text-gray-300 ri-arrow-down-wide-fill"></i></h5>
         <WaitingForDriver ride={ride} vehicleType={vehicleType} start={start} end={end} fare={fare} setWaitingForDriverPanel={setWaitingForDriverPanel} />
       </div>
 

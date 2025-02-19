@@ -173,6 +173,59 @@ This project is a ride-sharing application built with React, Redux, and React Ro
   - **Fare Information:** Displays the fare amount and payment method.
   - **Payment Button:** Allows users to make a payment for the ride.
 
+### Route: `/payment`
+- **Description:**  
+  The payment route handles the payment processing for completed rides using Razorpay integration.
+- **Method:** GET (renders on browser navigation)
+- **Component:** `Payment` (renders `RazorpayPayment`)
+- **Features:**
+  - Displays the total fare amount
+  - Integrates with Razorpay payment gateway
+  - Shows payment status notifications
+  - Automatically redirects to home page after successful payment
+
+## Payment Integration
+
+### Razorpay Integration
+The application uses Razorpay for payment processing. The integration is handled through the `RazorpayPayment` component.
+
+#### Payment Flow
+1. **Payment Initialization**
+   - When user clicks "Pay Now", the application creates a Razorpay order
+   - Makes a POST request to `/api/v1/payments/create-payment`
+   - Requires amount, currency, and receipt details
+
+2. **Payment Processing**
+   - Opens Razorpay payment modal
+   - Handles payment through Razorpay's secure interface
+   - Supports multiple payment methods (cards, UPI, wallets)
+
+3. **Payment Verification**
+   - After successful payment, verifies the transaction
+   - Makes a POST request to `/api/v1/payments/verify-payment`
+   - Validates payment signature and order details
+
+4. **Success/Failure Handling**
+   - Shows success/failure notifications using toast messages
+   - Redirects to home page on successful payment
+   - Provides retry option on payment failure
+
+#### Component Structure
+- **MakePayment:** Displays ride details and payment button
+- **RazorpayPayment:** Handles payment integration and processing
+- **RideInfo:** Shows ride information during payment process
+
+#### Environment Variables
+```env
+VITE_ROZARPAY_TEST_API_KEY=your_razorpay_key
+VITE_BASE_URL=your_api_base_url
+```
+
+#### Error Handling
+- Displays user-friendly error messages
+- Handles network failures and payment declines
+- Provides clear feedback on payment status
+
 ## Page Documentation Updates
 
 ### Home Page (`/home`)

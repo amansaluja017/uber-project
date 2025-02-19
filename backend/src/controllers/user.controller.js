@@ -114,7 +114,6 @@ export const userProfile = asyncHandler(async (req, res) => {
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
-  console.log(req.user);
   const user = await User.findByIdAndUpdate(
     req.user._id,
     {

@@ -20,6 +20,7 @@ function CaptianHome() {
   const confirmRidePopupPanelRef = useRef(null);
 
   const captian = useSelector(state => state.captian.captianData);
+  console.log(captian.status);
 
   const { isConnected, messages } = useSelector(state => state.socket);
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ function CaptianHome() {
       setRide(message);
       dispatch(receiveMessage(message));
 
-      if(message) {
+      if (message) {
         setRidePopupPanel(true);
       }
     });
@@ -51,29 +52,29 @@ function CaptianHome() {
   useEffect(() => {
     if (!navigator.geolocation) return;
 
-    const updatelocation = () => {
-      navigator.geolocation.getCurrentPosition((position) => {
-        socket.emit('update-location-captian', {
-          userId: captian._id,
-          location: {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          }
+    if (captian.status === 'active') {
+      const updatelocation = () => {
+        navigator.geolocation.getCurrentPosition((position) => {
+          socket.emit('update-location-captian', {
+            userId: captian._id,
+            location: {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            }
+          })
         })
-      })
-    };
-
-    const locationInterval = setInterval(updatelocation, 10000);
-    updatelocation();
-
-    return () => clearInterval(locationInterval);
+      }
+      const locationInterval = setInterval(updatelocation, 10000);
+      updatelocation();
+      return () => clearInterval(locationInterval);
+    }
   }, [captian]);
 
   async function confirmRide() {
     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/confirm`, {
       rideId: ride._id,
       captainId: captian._id
-    }, {withCredentials: true});
+    }, { withCredentials: true });
   };
 
 

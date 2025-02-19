@@ -24,7 +24,7 @@ function CaptianLogin() {
         navigate('/captian-home');
       }
     } catch (error) {
-      setError(error.message || "something went wrong during login");
+      setError('email or password is incorrect');
     }
     
   };
@@ -39,11 +39,10 @@ function CaptianLogin() {
           <Input label='Enter your email' type="email" placeholder='example@example.com' {...register('email', { required: true })}/>
         </div>
 
-        {error && <p>{error}</p>}
-
         <div className='py-4 flex flex-col'>
           <Input label='Enter your Password' type="password" placeholder='password' {...register('password', { required: true })}/>
         </div>
+        {error && <p className='text-red-700 text-sm font-mono'>{error}</p>}
 
         <div>
           <Button className='w-full'>Login</Button>

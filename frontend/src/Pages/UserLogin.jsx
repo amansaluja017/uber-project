@@ -18,14 +18,13 @@ function UserLogin() {
     setError('');
     try {
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/users/login`, data, {withCredentials: true});
-      console.log(response)
       if(response.status === 200) {
         dispatch(login(response.data.data.user))
         localStorage.setItem('token', response.data.data.accessToken);
         navigate('/home');
       }
     } catch (error) {
-      setError(error.message || "something went wrong during login");
+      setError("email or password is incorrect");
     }
     
   };
@@ -51,8 +50,6 @@ function UserLogin() {
           />
         </div>
 
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-
         <div className='py-4 flex flex-col'>
           <Input 
             label='Password' 
@@ -64,6 +61,7 @@ function UserLogin() {
             })}
           />
         </div>
+        {error && <p className='text-red-700 text-sm font-mono'>{error}</p>}
 
         <div>
           <Button className='w-full'>Login</Button>

@@ -3,7 +3,6 @@ import { Button } from '../components/index'
 import { useSelector } from 'react-redux'
 
 function RidePopup(props) {
-    const captian = useSelector(state => state.captian.captianData);
 
     const userFirstName = props.ride?.user.firstName;
     const userLastName = props.ride?.user.lastName;

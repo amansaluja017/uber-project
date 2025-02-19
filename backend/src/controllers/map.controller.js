@@ -77,7 +77,7 @@ export const getSuggestions = asyncHandler(async(req, res) => {
         return res.status(200).json(new ApiResponse(200, suggestions, "Suggestions fetched successfully"))
         
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 });
 

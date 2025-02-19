@@ -22,7 +22,8 @@ function UserSignup() {
         navigate('/login')
       }
     } catch (error) {
-      setError(error.message || "Something went wrong during signup");
+      console.log(error)
+      setError('email is not valid or already registered');
     }
   }
 
@@ -81,6 +82,7 @@ function UserSignup() {
               })}
             />
           </div>
+          {error && <p className='text-red-700 text-sm font-mono'>{error}</p>}
           <div>
             <Button className='w-full'>Sign up</Button>
           </div>

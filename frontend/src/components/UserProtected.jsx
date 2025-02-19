@@ -8,7 +8,7 @@ function UserProtected({ children, authentication = true }) {
   const userStatus = useSelector(state => state.user?.status);
 
   useEffect(() => {
-    if(typeof userStatus !== 'boolean') return;
+    if (typeof userStatus !== 'boolean') return;
 
     if (authentication && userStatus !== authentication) {
       navigate('/login');
@@ -19,7 +19,9 @@ function UserProtected({ children, authentication = true }) {
     setLoading(false);
   }, [authentication, userStatus, navigate]);
 
-  if (loading) return <h1>Loading...</h1>;
+  if (loading) return <div className='w-full h-screen flex items-center justify-center'>
+    <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-black'></div>
+  </div>;
 
   return <>{children}</>;
 }

@@ -9,7 +9,6 @@ function ConfirmPopupRide(props) {
     const navigate = useNavigate();
     const [otp, setOtp] = useState('');
     const [error, setError] = useState('');
-    const captian = useSelector(state => state.captian.captianData);
 
     const userFirstName = props.ride?.user.firstName;
     const userLastName = props.ride?.user.lastName;

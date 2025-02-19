@@ -17,6 +17,7 @@ import CaptianHome from './Pages/CaptianHome.jsx'
 import CaptianProtected from './components/CaptianProtected.jsx'
 import Riding from './Pages/Riding.jsx'
 import CaptianRide from './Pages/CaptianRide.jsx'
+import Payment from './Pages/Payment.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -50,6 +51,7 @@ createRoot(document.getElementById('root')).render(
               <CaptianLogout />
             </UserProtected>
           } />
+          <Route path='/payment' element={<Payment />} />
         </Routes>
       </BrowserRouter>
     </Provider>

@@ -42,7 +42,6 @@ const getOtp = (num) => {
 }
 
 export const createNewRide = async ({ user, start, end, vehicleType }) => {
-    console.log(start)
 
     const pickup = `${start.lat},${start.lng}`;
     const destination = `${end.lat},${end.lng}`;

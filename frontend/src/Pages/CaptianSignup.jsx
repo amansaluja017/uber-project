@@ -26,7 +26,7 @@ function CaptianSignup() {
         navigate('/captian-login');
       }
     } catch (error) {
-      setError(error.message || "Something went wrong during signup");
+      setError('email is not valid or already registered');
     }
   }
 
@@ -105,7 +105,7 @@ function CaptianSignup() {
                 })}
               />
               <select 
-                className='bg-gray-100 border-2 rounded h-9' 
+                className='bg-gray-200 rounded h-9' 
                 {...register('vehicle.vehicleType', {required: 'Vehicle type is required'})}
               >
                 <option value="">Select Vehicle Type</option>
@@ -117,13 +117,14 @@ function CaptianSignup() {
 
             <div className='mt-3 flex flex-col'>
               <label htmlFor="" className='font-medium text-base relative'>Status</label>
-              <select defaultValue='Select one' className='bg-gray-100 h-9 border-2 rounded' name="status" id={statusId} {...register('status', {required: true})}>
+              <select defaultValue='Select one' className='bg-gray-200 h-9 b rounded' name="status" id={statusId} {...register('status', {required: true})}>
                 <option value="active">active</option>
                 <option value="inactive">inactive</option>
               </select>
             </div>
             
           </div>
+          {error && <p className='text-red-700 text-sm font-mono'>{error}</p>}
           <div>
             <Button className='w-full'>Sign up</Button>
           </div>
