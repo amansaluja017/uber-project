@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 function RideInfo(props) {
+    console.log(props.ride)
     return (
         <div>
             <div>

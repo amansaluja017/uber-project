@@ -31,7 +31,7 @@ function CaptianRide() {
           withCredentials: true
         });
         if(response.status === 200) {
-          navigate('/captian-home');
+          navigate('/captian-home', {state: {rideData: response.data}});
         }
       } catch (error) {
         console.error('Error ending ride:', error);

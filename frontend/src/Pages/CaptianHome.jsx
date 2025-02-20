@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import CaptianDetails from '../components/CaptianDetails'
 import RidePopup from '../components/RidePopup'
 import { useGSAP } from '@gsap/react'
@@ -19,8 +19,11 @@ function CaptianHome() {
   const ridePopupPanelRef = useRef(null);
   const confirmRidePopupPanelRef = useRef(null);
 
+  const {state} = useLocation();
+  const {rideData} = state || {};
+  console.log(rideData);
+
   const captian = useSelector(state => state.captian.captianData);
-  console.log(captian.status);
 
   const { isConnected, messages } = useSelector(state => state.socket);
   const dispatch = useDispatch();
@@ -111,7 +114,7 @@ function CaptianHome() {
         <LiveTracking />
       </div>
       <div className='h-2/5 p-5'>
-        <CaptianDetails />
+        <CaptianDetails rideData={rideData.data} />
       </div>
 
       <div ref={ridePopupPanelRef} className='h-screen bg-white flex top-[30%] fixed translate-y-full flex-col w-full p-4'>

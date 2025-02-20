@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button, Input } from '../components/index'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -6,6 +6,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 function ConfirmPopupRide(props) {
+    const submitButton = useRef();
     const navigate = useNavigate();
     const [otp, setOtp] = useState('');
     const [error, setError] = useState('');
@@ -41,6 +42,15 @@ function ConfirmPopupRide(props) {
             }
         }
     };
+
+    useEffect(() => {
+        if(otp.length === 6) {
+            submitButton.current.disabled = false;
+        } else {
+            submitButton.current.disabled = true;
+        }
+    },[otp]);
+   
 
 
 
@@ -93,7 +103,7 @@ function ConfirmPopupRide(props) {
                 <div>
                     <Input onChange={(e) => setOtp(e.target.value)} value={otp} type='number' className='w-full py-2 px-5' placeholder='Enter OTP' />
                     {error && <p className='text-red-700 text-sm font-mono'>{error}</p>  }
-                    <Button className='bg-green-700 mt-8 w-full'>Confirm</Button>
+                    <Button ref={submitButton} className='bg-green-700 mt-8 w-full disabled:bg-green-300' disabled>Confirm</Button>
                     <Button onClick={() => { props.setConfirmRidePopupPanel(false) }} className='bg-red-700 mt-[2%] w-full'>Cancel</Button>
                 </div>
             </form>

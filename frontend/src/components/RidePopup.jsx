@@ -7,7 +7,6 @@ function RidePopup(props) {
     const userFirstName = props.ride?.user.firstName;
     const userLastName = props.ride?.user.lastName;
     const payment = props.ride?.fare;
-    const totalFare = (payment * (1 - 0.30)).toFixed(2);
 
     return (
         <div>
@@ -48,7 +47,7 @@ function RidePopup(props) {
                             <i className="ri-cash-line"></i>
                         </div>
                         <div className='ml-3'>
-                            <h3 className='font-semibold text-sm'>₹{totalFare}</h3>
+                            <h3 className='font-semibold text-sm'>₹{payment}</h3>
                             <p className='text-sm text-gray-600'>Cash Cash</p>
                         </div>
                     </div>

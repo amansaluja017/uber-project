@@ -270,7 +270,7 @@ function Home() {
       <div ref={vehiclePanelRef} className='h-screen bg-white flex top-[30%] translate-y-full fixed flex-col w-full p-4'>
         <h3 className='absolute top-3 text-xl font-bold py-4'>Choose a Vehicle </h3>
         <h5 onClick={() => { setVehiclePanel(false) }} className='relative bottom-[1rem] text-center font-medium text-2xl'><i className="text-gray-300 ri-arrow-down-wide-fill"></i></h5>
-        <VehiclePanel setconfirmVehiclePanel={setconfirmVehiclePanel} fare={fare} selectVehicle={setVehicleType} />
+        <VehiclePanel setVehiclePanel={setVehiclePanel} setconfirmVehiclePanel={setconfirmVehiclePanel} fare={fare} selectVehicle={setVehicleType} />
       </div>
 
       <div ref={confirmVehiclePanelRef} className='h-screen bg-white flex top-[30%] translate-y-full fixed flex-col w-full p-4'>

@@ -187,4 +187,4 @@ export const endRide = asyncHandler(async (req, res) => {
     }
 
 
-})
+});

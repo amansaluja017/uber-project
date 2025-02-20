@@ -64,7 +64,7 @@ export const registercaptian = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(201, {captian, accessToken, refreshToken}, "captian created successfully"));
+    .json(new ApiResponse(201, captian, "captian created successfully"));
 });
 
 export const logincaptian = asyncHandler(async (req, res) => {
