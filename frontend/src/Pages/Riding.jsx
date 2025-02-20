@@ -3,7 +3,7 @@ import { Button } from '../components/index'
 import { Link, useLocation } from 'react-router-dom'
 import 'remixicon/fonts/remixicon.css'
 import socket from '../services/Socket.service';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { connectSocket, disconnectSocket, receiveMessage } from '../store/SocketSlice';
 import { useNavigate } from 'react-router-dom';
 import LiveTracking from '../components/liveTraking';
@@ -13,6 +13,8 @@ import gsap from 'gsap'
 import MakePayment from '../components/MakePayment';
 
 function Riding() {
+    const {messages} = useSelector(state => state.socket);
+    const distance = messages[0]?.distance;
     const rideInfoRef = useRef();
     const makePaymentRef = useRef();
     const [rideInfoPanel, setRideInfoPanel] = useState(false);
@@ -74,14 +76,14 @@ function Riding() {
                     setRideInfoPanel(true)
                 }} className='text-center font-bold text-xl'><i className="ri-arrow-up-wide-line"></i></h5>
                 <div className='flex items-center justify-between'>
-                    <h2 className='font-bold text-base'>4 KM away</h2>
+                    <h2 className='font-bold text-base'>{distance} KM away</h2>
                     <Button onClick={() => {
                         setRideInfoPanel(true)
                     }} className='w-[60%] bg-green-700'>view ride info</Button>
                 </div>
             </div>
 
-            <div ref={rideInfoRef} className='h-[60%] w-full p-5 absolute bottom-0 bg-white translate-y-full'>
+            <div ref={rideInfoRef} className='h-[55%] w-full p-4 absolute bottom-0 bg-white translate-y-full'>
             <h5 onClick={() => { setRideInfoPanel(false) }} className='relative bottom-[1rem] text-center font-medium text-2xl'><i className="text-gray-300 ri-arrow-down-wide-fill"></i></h5>
                 <RideInfo ride={ride} />
             </div>

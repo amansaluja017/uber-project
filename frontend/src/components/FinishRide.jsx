@@ -1,19 +1,22 @@
 import React from 'react'
-import {Button} from '../components/index'
+import { Button } from '../components/index'
+import { useSelector } from 'react-redux'
 
 function FinishRide(props) {
+    const { messages } = useSelector(state => state.socket);
+    const distance = messages[0]?.distance;
 
     return (
         <div>
-            <div>
-                <div className='flex justify-between mt-20 bg-yellow-300 py-4 w-full rounded-xl'>
+            <div className='p-4'>
+                <div className='flex justify-between mt-10 bg-yellow-300 py-4 w-full rounded-xl'>
                     <div className='flex justify-center items-center gap-2 px-2'>
                         <img className='h-10 w-10 object-contain rounded-full' src="https://img.freepik.com/free-vector/smiling-young-man-illustration_1308-174669.jpg" alt="avatar" />
                         <h3 className='font-semibold'>{props.rideData?.user?.firstName + " " + props.rideData?.user?.lastName}</h3>
                     </div>
 
                     <div className='text-start px-2 flex justify-center items-center'>
-                        <h2 className='font-semibold text-sm'>2.2 KM</h2>
+                        <h2 className='font-semibold text-sm'>{distance} KM</h2>
                     </div>
                 </div>
                 <div className='mt-10'>
@@ -48,10 +51,16 @@ function FinishRide(props) {
                     </div>
                 </div>
             </div>
-            <Button onClick={() => {props.endRide()}} className='bg-green-700 w-full'>Finish</Button>
-            
+            <div className='p-4'>
+                <Button onClick={() => {
+                    props.setRideEndedPanel(true)
+                    props.setFinishRidePanel(false)
+                    props.endRide()
+                }} className='bg-green-700 w-full'>Finish</Button>
+            </div>
+
         </div>
     )
 }
 
-export default FinishRide
+export default FinishRide;

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const RazorpayPayment = () => {
   const navigate = useNavigate();
 
-  const {messages} = useSelector(state => state.socket);
+  const { messages } = useSelector(state => state.socket);
   const handlePayment = async () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/payments/create-payment`, {
@@ -37,18 +37,18 @@ const RazorpayPayment = () => {
 
 
             if (verifyResponse.data.statusCode === 200) {
-                const successMessage = document.createElement('div');
-                successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-500 ease-in-out flex items-center';
-                successMessage.innerHTML = `
+              const successMessage = document.createElement('div');
+              successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-500 ease-in-out flex items-center';
+              successMessage.innerHTML = `
                 <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
                 <span class="font-semibold">Payment Successful!</span>
                 `;
-                document.body.appendChild(successMessage);
-                setTimeout(() => {
+              document.body.appendChild(successMessage);
+              setTimeout(() => {
                 successMessage.remove();
-                }, 3000);
+              }, 3000);
               navigate('/home')
             } else {
               alert("Payment verification failed!");
@@ -92,7 +92,7 @@ const RazorpayPayment = () => {
           <p className="text-gray-600 mb-2">Amount to Pay:</p>
           <p className="text-3xl font-bold text-gray-800">₹{messages[0].fare}</p>
         </div>
-        <button 
+        <button
           onClick={handlePayment}
           className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 ease-in-out flex items-center justify-center"
         >

@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Button, Input } from '../components/index'
-import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 function ConfirmPopupRide(props) {
+    const {messages} = useSelector(state => state.socket);
+    const distance = messages[0]?.distance;
     const submitButton = useRef();
     const navigate = useNavigate();
     const [otp, setOtp] = useState('');
@@ -64,7 +65,7 @@ function ConfirmPopupRide(props) {
                     </div>
 
                     <div className='text-start px-2 flex justify-center items-center'>
-                        <h2 className='font-semibold text-sm'>2.2 KM</h2>
+                        <h2 className='font-semibold text-sm'>{distance} KM</h2>
                     </div>
                 </div>
                 <div className='mt-10'>

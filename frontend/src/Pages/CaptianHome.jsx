@@ -21,11 +21,8 @@ function CaptianHome() {
 
   const {state} = useLocation();
   const {rideData} = state || {};
-  console.log(rideData);
 
   const captian = useSelector(state => state.captian.captianData);
-
-  const { isConnected, messages } = useSelector(state => state.socket);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -74,7 +71,7 @@ function CaptianHome() {
   }, [captian]);
 
   async function confirmRide() {
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/confirm`, {
+    await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/confirm`, {
       rideId: ride._id,
       captainId: captian._id
     }, { withCredentials: true });
@@ -114,7 +111,7 @@ function CaptianHome() {
         <LiveTracking />
       </div>
       <div className='h-2/5 p-5'>
-        <CaptianDetails rideData={rideData.data} />
+        <CaptianDetails />
       </div>
 
       <div ref={ridePopupPanelRef} className='h-screen bg-white flex top-[30%] fixed translate-y-full flex-col w-full p-4'>

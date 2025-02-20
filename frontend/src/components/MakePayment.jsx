@@ -1,17 +1,20 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 function MakePayment(props) {
-    // console.log(props.ride);
+    const {messages} = useSelector(state => state.socket);
+
     return (
         <div>
             <div>
                 <div className='flex justify-between'>
-                    <img className='h-12 w-12 object-contain' src="https://www.jaipurcitycab.in/images/car2.png" alt="car" />
+                    <div className='flex flex-col'>
+                        <div className='text-medium font-black flex gap-2'>Status:- <h1 className='text-green-400'>{messages[4]?.status}</h1></div>
+                    </div>
                     <div className='text-end'>
-                        <h4 className='text-xs text-gray-500'>{props.ride?.captian?.firstName + " " + props.ride?.captian?.lastName}</h4>
+                        <h4 className='text-xl font-medium'>{props.ride?.captian?.firstName + " " + props.ride?.captian?.lastName}</h4>
                         <h2 className='font-semibold text-sm'>{props.ride?.captian?.vehicle.plate}</h2>
-                        <h4 className='text-xs text-gray-500'>{`${props.ride?.captian?.vehicle.color}, ${props.ride?.captian?.vehicle.vehicleType}, capicity:- ${props.ride?.captian?.vehicle.capicity}`}</h4>
                     </div>
                 </div>
                 <div>
@@ -19,8 +22,8 @@ function MakePayment(props) {
                         <div>
                             <i className="ri-map-pin-fill"></i>
                         </div>
-                        <div className='ml-3 mt-4'>
-                            <h3 className='font-semibold text-sm'>Pickup</h3>
+                        <div className='ml-3 mt-2'>
+                            <h3 className='font-bold text-xl'>Pickup</h3>
                             <p className='text-sm'>{props.ride?.start}</p>
                         </div>
                     </div>
@@ -29,8 +32,8 @@ function MakePayment(props) {
                         <div>
                             <i className="ri-map-pin-3-fill"></i>
                         </div>
-                        <div className='ml-3 mt-4'>
-                            <h3 className='font-semibold text-sm'>Destination</h3>
+                        <div className='ml-3 mt-2'>
+                            <h3 className='font-bold text-xl'>Destination</h3>
                             <p className='text-sm'>{props.ride?.end}</p>
                         </div>
                     </div>
@@ -39,8 +42,8 @@ function MakePayment(props) {
                         <div>
                             <i className="ri-cash-line"></i>
                         </div>
-                        <div className='ml-3 mt-4'>
-                            <h3 className='font-semibold text-sm'>₹{props.ride?.fare}</h3>
+                        <div className='ml-3 mt-2'>
+                            <h3 className='font-bold text-xl'>₹{props.ride?.fare}</h3>
                             <p className='text-sm'>Cash Cash</p>
                         </div>
                     </div>

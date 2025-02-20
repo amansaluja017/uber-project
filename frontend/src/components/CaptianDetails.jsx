@@ -1,21 +1,8 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import {useSelector} from 'react-redux'
 
-function CaptianDetails(props) {
+function CaptianDetails() {
     const captian = useSelector(state => state.captian.captianData);
-    const {messages} = useSelector(state => state.socket);
-    console.log(messages)
-
-    const [totalEarnings, setTotalEarnings] = useState(0);
-
-    useEffect(() => {
-        if (props.rideData) {
-            const earnings = Array.isArray(props.rideData) 
-                ? props.rideData.reduce((total, ride) => total + Number(ride.fare), 0)
-                : Number(props.rideData.fare);
-            setTotalEarnings(earnings);
-        }
-    }, [props.rideData]);
 
     return (
         <div>
@@ -27,7 +14,7 @@ function CaptianDetails(props) {
                     </div>
 
                     <div className='text-start'>
-                        <h2 className='font-semibold text-sm'>{totalEarnings}</h2>
+                        <h2 className='font-semibold text-sm'></h2>
                         <h4 className='text-xs text-gray-500'>Earned</h4>
                     </div>
                 </div>

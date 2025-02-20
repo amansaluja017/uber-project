@@ -4,6 +4,9 @@ import { useSelector } from 'react-redux'
 
 function RidePopup(props) {
 
+    const {messages} = useSelector(state => state.socket);
+    const distance = messages[0]?.distance;
+
     const userFirstName = props.ride?.user.firstName;
     const userLastName = props.ride?.user.lastName;
     const payment = props.ride?.fare;
@@ -18,7 +21,7 @@ function RidePopup(props) {
                     </div>
 
                     <div className='text-start px-2 flex justify-center items-center'>
-                        <h2 className='font-semibold text-sm'>2.2 KM</h2>
+                        <h2 className='font-semibold text-sm'>{distance} KM</h2>
                     </div>
                 </div>
                 <div className='mt-10'>

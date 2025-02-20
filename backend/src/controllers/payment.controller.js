@@ -4,6 +4,7 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import { createPaymentService, verifyPaymentService } from '../../Services/payment.service.js';
 import { validationResult } from 'express-validator';
 import { Ride } from '../models/ride.model.js';
+import { getIO, sendMessagetoSocketId } from '../socket.js';
 
 export const createPayment = asyncHandler(async (req, res) => {
     try {
@@ -54,6 +55,17 @@ export const verifyPayment = asyncHandler(async (req, res) => {
         }
 
         const ride = await Ride.findOneAndUpdate({_id: rideId}, {paymentId, orderId, signature}, {new: true}).populate('user').populate('captian');
+
+        if (!ride) {
+            throw new ApiError(500, "Failed to update ride with payment details");
+        }
+
+        sendMessagetoSocketId(ride.captian._id, {
+            event: 'payment-verified',
+            data: ride
+        });
+
+        getIO().emit('payment-verified', ride);
 
         res.status(200).json(new ApiResponse(200, {paymentVerify, ride}, "Payment verified successfully"));
     } catch (error) {
