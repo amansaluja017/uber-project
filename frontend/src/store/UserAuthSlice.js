@@ -1,10 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const localData = JSON.parse(localStorage.getItem("userData")) || null;
-const localsignupData = JSON.parse(localStorage.getItem("localsignupData")) || null;
+const localsignupData =
+  JSON.parse(localStorage.getItem("localsignupData")) || null;
 const localStatus = JSON.parse(localStorage.getItem("status")) || false;
 
-const initialState = { usersignupData: localsignupData, userId: localData ? localData.id : null, userData: localData, status: localStatus };
+const initialState = {
+  usersignupData: localsignupData,
+  userId: localData ? localData.id : null,
+  userData: localData,
+  status: localStatus,
+};
 
 const userslice = createSlice({
   name: "user",

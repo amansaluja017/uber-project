@@ -17,7 +17,6 @@ app.use(express.json({ limit: "40kb" }));
 app.use(express.urlencoded({ extended: true, limit: "40kb" }));
 app.use("/src", express.static("src", { extensions: ["css"] }));
 
-
 import userRoutes from "./routes/user.routes.js";
 import captianRoutes from "./routes/captian.routes.js";
 import mapsRoutes from "./routes/maps.routes.js";

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import CaptianDetails from '../components/CaptianDetails'
 import RidePopup from '../components/RidePopup'
 import { useGSAP } from '@gsap/react'
@@ -18,9 +18,6 @@ function CaptianHome() {
   const [ride, setRide] = useState(null);
   const ridePopupPanelRef = useRef(null);
   const confirmRidePopupPanelRef = useRef(null);
-
-  const {state} = useLocation();
-  const {rideData} = state || {};
 
   const captian = useSelector(state => state.captian.captianData);
   const dispatch = useDispatch();

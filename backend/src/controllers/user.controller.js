@@ -103,7 +103,6 @@ export const loginUser = asyncHandler(async (req, res) => {
         "Logged in successfully"
       )
     );
-    
 });
 
 export const userProfile = asyncHandler(async (req, res) => {

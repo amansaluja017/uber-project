@@ -14,7 +14,6 @@ function CaptianSignup() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const statusId = useId();
-  const vehicleId = useId();
 
   const submit = async (data) => {
     setError('')

@@ -12,7 +12,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
       req.header("Authorization")?.replace("Bearer ", "");
     if (!token) {
       throw new ApiError(401, "Unauthorized access");
-    };
+    }
 
     const isTokenBlackListed = await Token.findOne({ token });
 

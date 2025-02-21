@@ -1,7 +1,7 @@
 import { app } from "./app.js";
 import dotenv from "dotenv";
-import {initializeSocket} from './socket.js';
-import {createServer} from 'node:http'
+import { initializeSocket } from "./socket.js";
+import { createServer } from "node:http";
 import connectToDB from "./db/db.js";
 
 dotenv.config({
@@ -22,5 +22,5 @@ connectToDB()
   })
   .catch((error) => {
     console.error("Error connecting to database:", error);
-    process.exit(1); 
+    process.exit(1);
   });

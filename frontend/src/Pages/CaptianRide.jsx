@@ -5,7 +5,6 @@ import FinishRide from '../components/FinishRide'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
 import { connectSocket } from '../store/SocketSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import LiveTracking from '../components/liveTraking'
@@ -23,7 +22,6 @@ function CaptianRide() {
   const paymentReceivePanelRef = useRef();
   const location = useLocation();
   const rideData = location?.state?.ride;
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {

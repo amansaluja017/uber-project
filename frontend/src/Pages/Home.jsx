@@ -52,7 +52,6 @@ function Home() {
 
   const pickup = typeof start === "object" ? start.name : start;
   const destination = typeof end === "object" ? end.name : end;
-  console.log(rideCancelPanel)
 
   useEffect(() => {
     connectSocket(dispatch);
