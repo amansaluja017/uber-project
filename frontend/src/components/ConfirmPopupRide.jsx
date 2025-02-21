@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 function ConfirmPopupRide(props) {
-    const {messages} = useSelector(state => state.socket);
+    const { messages } = useSelector(state => state.socket);
     const distance = messages[0]?.distance;
     const submitButton = useRef();
     const navigate = useNavigate();
@@ -45,13 +45,13 @@ function ConfirmPopupRide(props) {
     };
 
     useEffect(() => {
-        if(otp.length === 6) {
+        if (otp.length === 6) {
             submitButton.current.disabled = false;
         } else {
             submitButton.current.disabled = true;
         }
-    },[otp]);
-   
+    }, [otp]);
+
 
 
 
@@ -103,14 +103,17 @@ function ConfirmPopupRide(props) {
             <form onSubmit={checkOtp}>
                 <div>
                     <Input onChange={(e) => setOtp(e.target.value)} value={otp} type='number' className='w-full py-2 px-5' placeholder='Enter OTP' />
-                    {error && <p className='text-red-700 text-sm font-mono'>{error}</p>  }
+                    {error && <p className='text-red-700 text-sm font-mono'>{error}</p>}
                     <Button ref={submitButton} className='bg-green-700 mt-8 w-full disabled:bg-green-300' disabled>Confirm</Button>
-                    <Button onClick={() => { props.setConfirmRidePopupPanel(false) }} className='bg-red-700 mt-[2%] w-full'>Cancel</Button>
+                    <Button onClick={() => {
+                        props.setConfirmRidePopupPanel(false)
+                        props.cancelRide()
+                    }} className='bg-red-700 mt-[2%] w-full'>Cancel</Button>
                 </div>
             </form>
 
         </div>
     )
-}
+};
 
 export default ConfirmPopupRide

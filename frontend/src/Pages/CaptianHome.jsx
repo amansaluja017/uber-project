@@ -77,6 +77,13 @@ function CaptianHome() {
     }, { withCredentials: true });
   };
 
+  async function cancelRide() {
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/cancel-ride`, {
+      rideId: ride._id
+    }, { withCredentials: true });
+    console.log(response);
+  };
+
 
   useGSAP(() => {
     if (ridePopupPanel) {
@@ -122,10 +129,10 @@ function CaptianHome() {
 
       <div ref={confirmRidePopupPanelRef} className='h-screen bg-white flex top-0 z-11 fixed translate-y-full flex-col w-full p-4'>
         <h3 className='absolute top-0 text-xl font-bold py-4 mt-10'>Confirm your Ride </h3>
-        <ConfirmPopupRide otp={otp} ride={ride} setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />
+        <ConfirmPopupRide cancelRide={cancelRide} otp={otp} ride={ride} setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />
       </div>
     </div>
   )
-}
+};
 
 export default CaptianHome

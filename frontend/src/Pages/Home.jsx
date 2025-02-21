@@ -18,6 +18,7 @@ import { connectSocket, disconnectSocket, receiveMessage, sendMessage } from '..
 import socket from '../services/Socket.service.js'
 import { Link, useNavigate } from 'react-router-dom'
 import LiveTracking from '../components/liveTraking.jsx'
+import RideCancel from '../components/RideCancel.jsx'
 
 function Home() {
   const [openPanel, setOpenPanel] = useState(false);
@@ -33,6 +34,7 @@ function Home() {
   const [fare, setFare] = useState('');
   const [vehicleType, setVehicleType] = useState(null);
   const [ride, setRide] = useState(null);
+  const [rideCancelPanel, setRideCancelPanel] = useState(false);
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
   const find = useRef(null);
@@ -42,6 +44,7 @@ function Home() {
   const waitingForDriverPanelRef = useRef(null);
   const inputRef = useRef(null);
   const suggestionRef = useRef(null);
+  const rideCancelPanelRef = useRef(null);
 
   const user = useSelector(state => state.user.userData);
   const navigate = useNavigate();
@@ -49,6 +52,7 @@ function Home() {
 
   const pickup = typeof start === "object" ? start.name : start;
   const destination = typeof end === "object" ? end.name : end;
+  console.log(rideCancelPanel)
 
   useEffect(() => {
     connectSocket(dispatch);
@@ -65,6 +69,16 @@ function Home() {
       setWaitingForDriverPanel(false);
       dispatch(receiveMessage(message));
       navigate('/riding', { state: { ride: message } });
+    });
+
+    socket.on('rideCancelled', (message) => {
+      console.log('ride cancelled', message)
+      dispatch(receiveMessage(message));
+      setlookingDriverPanel(false);
+      setWaitingForDriverPanel(false);
+      setVehiclePanel(false);
+      setconfirmVehiclePanel(false);
+      setRideCancelPanel(true);
     });
 
     return () => {
@@ -199,7 +213,16 @@ function Home() {
         transform: 'translateY(100%)'
       })
     }
-  }, [openPanel, vehiclePanel, confirmVehiclePanel, lookingDriverPanel, waitingForDriverPanel]);
+    if (rideCancelPanel) {
+      gsap.to(rideCancelPanelRef.current, {
+        transform: 'translateY(0)'
+      })
+    } else {
+      gsap.to(rideCancelPanelRef.current, {
+        transform: 'translateY(100%)'
+      })
+    }
+  }, [openPanel, vehiclePanel, confirmVehiclePanel, lookingDriverPanel, waitingForDriverPanel, rideCancelPanel]);
 
   return (
     <div className='h-screen'>
@@ -289,6 +312,10 @@ function Home() {
         <h3 className='absolute top-3 text-xl font-bold py-4'>Driver's details </h3>
         <h5 onClick={() => { setWaitingForDriverPanel(false) }} className='relative bottom-[1rem] text-center font-medium text-2xl'><i className="text-gray-300 ri-arrow-down-wide-fill"></i></h5>
         <WaitingForDriver ride={ride} vehicleType={vehicleType} start={start} end={end} fare={fare} setWaitingForDriverPanel={setWaitingForDriverPanel} />
+      </div>
+
+      <div ref={rideCancelPanelRef} className='h-screen bg-white flex top-[60%] fixed flex-col translate-y-full w-full p-4'>
+        <RideCancel setRideCancelPanel={setRideCancelPanel} />
       </div>
 
     </div>

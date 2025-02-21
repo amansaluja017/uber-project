@@ -7,7 +7,6 @@ import { Captian } from "../models/captian.model.js";
 
 export const verifyJWT = asyncHandler(async (req, _, next) => {
   try {
-    console.log(req.cookies);
     const token =
       req.cookies?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");

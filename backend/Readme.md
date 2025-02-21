@@ -720,6 +720,95 @@ On success, the endpoint returns a JSON response with status code 200 OK includi
   - 401 Unauthorized: when JWT is missing or invalid.
   - 500 Internal Server Error: on server failure.
 
+## Ride Cancellation API Endpoint Documentation
+
+### Endpoint: `/api/v1/rides/cancel-ride`
+
+#### Description
+This endpoint allows a captain to cancel an ongoing ride. When a ride is cancelled, both the user and captain are notified through WebSocket events.
+
+#### HTTP Method
+`POST`
+
+#### Authentication
+This endpoint is protected by JWT authentication. A valid captain token must be provided.
+
+#### Request Body
+The request should be in JSON format containing:
+
+- **rideId** (string, required):  
+  MongoDB ID of the ride to be cancelled. Must be a valid MongoDB ObjectId.
+
+#### Example Request
+```json
+{
+    "rideId": "65bf12345678901234567890"
+}
+```
+
+#### Successful Response
+On success, the endpoint returns a JSON response with status code 200 OK including the cancelled ride details.
+
+```json
+{
+    "status": 200,
+    "data": {
+        "_id": "65bf12345678901234567890",
+        "status": "cancelled",
+        "user": {
+            "_id": "user_id",
+            "firstName": "John",
+            "email": "john@example.com"
+        },
+        "captain": {
+            "_id": "captain_id",
+            "firstName": "Mike",
+            "email": "mike@example.com"
+        },
+        "cancelledAt": "2024-02-08T12:34:56.789Z"
+    },
+    "message": "Ride cancelled successfully"
+}
+```
+
+#### Error Responses
+
+- **400 Bad Request:**
+```json
+{
+    "status": 400,
+    "message": "Invalid ride ID"
+}
+```
+
+- **401 Unauthorized:**
+```json
+{
+    "status": 401,
+    "message": "Unauthorized access"
+}
+```
+
+- **404 Not Found:**
+```json
+{
+    "status": 404,
+    "message": "Ride not found"
+}
+```
+
+- **500 Internal Server Error:**
+```json
+{
+    "status": 500,
+    "message": "Internal server error"
+}
+```
+
+#### WebSocket Events
+When a ride is cancelled, the following WebSocket events are emitted:
+- `rideCancelled` - Sent to both the user and captain with the cancelled ride details
+
 ## Socket.io API Documentation
 
 ### Overview
