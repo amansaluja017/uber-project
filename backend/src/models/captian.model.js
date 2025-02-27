@@ -82,7 +82,7 @@ const captianSchema = new Schema(
       lng: {
         type: Number,
       },
-    },
+    }
   },
   { timestamps: true }
 );

@@ -14,7 +14,7 @@ function CaptianDetails() {
                     </div>
 
                     <div className='text-start'>
-                        <h2 className='font-semibold text-sm'></h2>
+                        <h2 className='font-semibold text-sm'>{}</h2>
                         <h4 className='text-xs text-gray-500'>Earned</h4>
                     </div>
                 </div>

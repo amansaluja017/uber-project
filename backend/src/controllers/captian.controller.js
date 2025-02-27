@@ -5,6 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { validationResult } from "express-validator";
 import { Token } from "../models/blacklistToken.model.js";
+import { Ride } from "../models/ride.model.js";
 
 export const generateAccessAndRefreshToken = async (userId) => {
   try {

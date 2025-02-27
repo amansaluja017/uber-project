@@ -1,4 +1,5 @@
 import {
+  CancelTheRide,
   confirmTheRide,
   createNewRide,
   endTheRide,
@@ -212,3 +213,39 @@ export const endRide = asyncHandler(async (req, res) => {
     throw new ApiError(500, "internal error");
   }
 });
+
+export const cancelRide = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ApiError(
+      400,
+      errors.array().map((err) => err.msg)
+    );
+  }
+
+  const { rideId } = req.body;
+
+  if (!rideId) {
+    throw new ApiError(404, "rideId not found");
+  }
+
+  try {
+    const cancelRide = await CancelTheRide({rideId});
+    if (!cancelRide) {
+      throw new ApiError(404, "ride not found or already cancelled");
+    }
+
+    sendMessagetoSocketId(cancelRide.user.socketId, {
+      event: "rideCancelled",
+      data: cancelRide,
+    });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, cancelRide, "ride cancelled successfully"));
+  } catch (error) {
+    console.error(error);
+    throw new ApiError(500, "internal error");
+    
+  }
+})

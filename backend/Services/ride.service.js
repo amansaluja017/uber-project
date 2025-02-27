@@ -125,3 +125,22 @@ export const endTheRide = async ({ rideId, captian }) => {
     }
 
 }
+
+export const CancelTheRide = async({rideId}) => {
+    if(!rideId) {
+        throw new ApiError(400, "Ride ID is required")
+    }
+
+    try {
+        const ride = await Ride.findOneAndUpdate({_id: rideId}, {status: 'cancelled'}, {new: true}).populate('user').populate('captian');
+
+        if (!ride) {
+            throw new ApiError(404, "Ride not found");
+        }
+
+        return ride;
+    } catch (e) {
+        console.error(e);
+        throw new ApiError(500, "Internal error");
+    }
+}

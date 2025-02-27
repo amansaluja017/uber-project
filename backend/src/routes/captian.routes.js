@@ -1,5 +1,5 @@
 import express from "express";
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 import {
   registercaptian,
   logincaptian,
