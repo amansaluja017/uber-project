@@ -143,3 +143,27 @@ export const logoutCaptian = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, captian, "logged out successfully"));
 });
+
+export const rideHistory = asyncHandler(async(req, res) => {
+  const {rideId} = req.query;
+  console.log(rideId)
+
+  if(!rideId) {
+    throw new ApiError(400, "Invalid ride id")
+  }
+
+  const ride = await Ride.findById(rideId);
+  if(!ride) {
+    throw new ApiError(404, "Ride not found")
+  }
+
+  const captianId = ride.captian?._id;
+
+  const captianRideHistory = await Captian.findByIdAndUpdate(
+    captianId, 
+    { $push: { rideHistory: ride } },
+    { new: true }
+  ).populate("rideHistory");
+
+  return res.status(200).json(new ApiResponse(200, captianRideHistory?.rideHistory, "Ride history fetched successfully"));
+});

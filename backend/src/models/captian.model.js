@@ -82,7 +82,14 @@ const captianSchema = new Schema(
       lng: {
         type: Number,
       },
-    }
+    },
+    rideHistory: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Ride",
+        unique: true,
+      },
+    ]
   },
   { timestamps: true }
 );

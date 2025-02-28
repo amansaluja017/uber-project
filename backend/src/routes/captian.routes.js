@@ -5,6 +5,7 @@ import {
   logincaptian,
   captainProfile,
   logoutCaptian,
+  rideHistory,
 } from "../controllers/captian.controller.js";
 import { verifyJWTCaptian } from "../middlewares/auth.middleware.js";
 
@@ -39,5 +40,6 @@ router
 
 router.route("/captainProfile").get(verifyJWTCaptian, captainProfile);
 router.route("/logout").get(verifyJWTCaptian, logoutCaptian);
+router.route("/rideHistory").get(rideHistory);
 
 export default router;

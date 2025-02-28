@@ -968,3 +968,86 @@ The request should be in JSON format containing:
     "message": "Internal server error: Failed to verify payment"
 }
 ```
+
+## Ride History API Endpoint Documentation
+
+### Endpoint: `/api/v1/captian/rideHistory`
+
+#### Description
+This endpoint retrieves the ride history and earnings for a specific ride. It's typically used to fetch details about completed rides and calculate total earnings.
+
+#### HTTP Method
+`GET`
+
+#### Query Parameters
+- **rideId** (string, required):  
+  The MongoDB ID of the ride to fetch history for.
+
+#### Example Request
+```
+GET /api/v1/captian/rideHistory?rideId=65bf12345678901234567890
+```
+
+#### Successful Response
+On success, the endpoint returns a JSON response with status code 200 OK including the ride history and calculated earnings.
+
+#### Example Successful Response
+```json
+{
+    "status": 200,
+    "data": [
+        {
+            "_id": "65bf12345678901234567890",
+            "user": {
+                "_id": "user_id",
+                "firstName": "John",
+                "lastName": "Doe"
+            },
+            "captain": {
+                "_id": "captain_id",
+                "firstName": "Mike",
+                "lastName": "Smith"
+            },
+            "start": "Starting Location",
+            "end": "Destination Location",
+            "fare": 250.00,
+            "distance": "12.5",
+            "duration": "25",
+            "status": "completed",
+            "createdAt": "2024-02-08T12:34:56.789Z",
+            "completedAt": "2024-02-08T13:00:00.000Z"
+        }
+        // Additional ride history entries...
+    ],
+    "message": "Ride history fetched successfully"
+}
+```
+
+#### Error Responses
+
+- **400 Bad Request:**  
+  Returned when the rideId parameter is missing or invalid.
+  ```json
+  {
+      "status": 400,
+      "message": "Ride ID is required"
+  }
+  ```
+
+- **404 Not Found:**  
+  Returned when no ride history is found for the given rideId.
+  ```json
+  {
+      "status": 404,
+      "message": "No ride history found"
+  }
+  ```
+
+- **500 Internal Server Error:**  
+  Indicates an unexpected server error while fetching the ride history.
+  ```json
+  {
+      "status": 500,
+      "message": "Error fetching ride history"
+  }
+```

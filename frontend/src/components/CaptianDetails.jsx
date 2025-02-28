@@ -1,8 +1,42 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {useSelector} from 'react-redux'
+import axios from 'axios'
 
-function CaptianDetails() {
+function CaptianDetails(props) {
     const captian = useSelector(state => state.captian.captianData);
+    const {messages} = useSelector(state => state.socket);
+    const [earnings, setEarnings] = useState(0);
+    console.log(messages);
+    const rideId = messages[0]?._id;
+    console.log(rideId);
+    console.log(props.ride)
+
+    const rideHistory = async() => {
+        if (!rideId) return;
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/captian/rideHistory`, {
+                params: {
+                    rideId: rideId,
+                }
+            });
+            console.log(response);
+            const rides = response.data.data;
+            console.log(rides)
+            const earnings = rides.reduce((acc, ride) => acc + ride.fare, 0);
+            
+            setEarnings(earnings);
+            console.log(earnings)
+            return earnings;
+        } catch (error) {
+            console.error('Error fetching ride history:', error);
+        }
+    };
+
+    React.useEffect(() => {
+        if (messages[0]?._id) {
+            rideHistory();
+        }
+    }, [messages]);
 
     return (
         <div>
@@ -14,7 +48,7 @@ function CaptianDetails() {
                     </div>
 
                     <div className='text-start'>
-                        <h2 className='font-semibold text-sm'>{}</h2>
+                        <h2 className='font-semibold text-sm'>₹{Math.floor(earnings)}</h2>
                         <h4 className='text-xs text-gray-500'>Earned</h4>
                     </div>
                 </div>

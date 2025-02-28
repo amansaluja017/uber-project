@@ -26,6 +26,7 @@ function CaptianHome() {
     connectSocket(dispatch);
 
     socket.on('message', (message) => {
+      console.log('message received ride', message);
       setRide(message);
       dispatch(receiveMessage(message));
 
@@ -115,7 +116,7 @@ function CaptianHome() {
         <LiveTracking />
       </div>
       <div className='h-2/5 p-5'>
-        <CaptianDetails />
+        <CaptianDetails ride={ride} />
       </div>
 
       <div ref={ridePopupPanelRef} className='h-screen bg-white flex top-[30%] fixed translate-y-full flex-col w-full p-4'>
