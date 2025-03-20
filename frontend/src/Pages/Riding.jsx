@@ -51,7 +51,6 @@ function Riding() {
         socket.off('rideEnded');
 
         socket.on('rideEnded', (message) => {
-            console.log('ride ended received', message);
             dispatch(receiveMessage(message));
             setMakePaymentPanel(true);
         });

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from 'axios'
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -35,8 +35,8 @@ const RazorpayPayment = () => {
               signature: response.razorpay_signature,
             }, { withCredentials: true });
 
-
-            if (verifyResponse.data.statusCode === 200) {
+            if (verifyResponse.status === 200) {
+              navigate('/home', {state: true});
               const successMessage = document.createElement('div');
               successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-500 ease-in-out flex items-center';
               successMessage.innerHTML = `
@@ -49,7 +49,6 @@ const RazorpayPayment = () => {
               setTimeout(() => {
                 successMessage.remove();
               }, 3000);
-              navigate('/home')
             } else {
               alert("Payment verification failed!");
             }

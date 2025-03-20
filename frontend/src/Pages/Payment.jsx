@@ -1,5 +1,5 @@
 import React from 'react'
-import RazarpayPayment from '../components/razorpayPayment'
+import RazarpayPayment from '../components/RazorpayPayment'
 
 
 function Payment() {

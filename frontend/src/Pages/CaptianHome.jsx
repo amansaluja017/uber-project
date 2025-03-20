@@ -26,7 +26,6 @@ function CaptianHome() {
     connectSocket(dispatch);
 
     socket.on('message', (message) => {
-      console.log('message received ride', message);
       setRide(message);
       dispatch(receiveMessage(message));
 
@@ -76,10 +75,9 @@ function CaptianHome() {
   };
 
   async function cancelRide() {
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/cancel-ride`, {
+    await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/rides/cancel-ride`, {
       rideId: ride._id
     }, { withCredentials: true });
-    console.log(response);
   };
 
 

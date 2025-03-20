@@ -8,6 +8,7 @@ const connectToDB = async () => {
     console.log(`Connected to ${process.env.DB_NAME} database`);
   } catch (error) {
     console.error("could not connect to database", error);
+    process.exit(1)
   }
 };
 

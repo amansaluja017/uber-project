@@ -11,7 +11,6 @@ function RideEnded(props) {
         connectSocket(dispatch);
 
         socket.on('payment-verified', (message) => {
-            console.log('payment verified received', message);
             dispatch(receiveMessage(message));
             props.setRideEndedPanel(false);
             props.setPaymentReceivePanel(true);

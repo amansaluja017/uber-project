@@ -11,7 +11,6 @@ function CaptianLogout() {
             Authorization: `Bearer ${token}`
         }
     }).then((response) => {
-        console.log(response);
         if(response.status === 200) {
             localStorage.removeItem('token');
             localStorage.removeItem('captianStatus');

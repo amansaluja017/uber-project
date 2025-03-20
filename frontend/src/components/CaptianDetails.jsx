@@ -6,10 +6,7 @@ function CaptianDetails(props) {
     const captian = useSelector(state => state.captian.captianData);
     const {messages} = useSelector(state => state.socket);
     const [earnings, setEarnings] = useState(0);
-    console.log(messages);
     const rideId = messages[0]?._id;
-    console.log(rideId);
-    console.log(props.ride)
 
     const rideHistory = async() => {
         if (!rideId) return;
@@ -19,13 +16,10 @@ function CaptianDetails(props) {
                     rideId: rideId,
                 }
             });
-            console.log(response);
             const rides = response.data.data;
-            console.log(rides)
             const earnings = rides.reduce((acc, ride) => acc + ride.fare, 0);
             
             setEarnings(earnings);
-            console.log(earnings)
             return earnings;
         } catch (error) {
             console.error('Error fetching ride history:', error);

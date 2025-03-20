@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.0.5",
     "@tomtom-international/web-sdk-maps": "^6.25.0",
     "axios": "^1.7.9",
+    "daisyui": "^5.0.6",
     "gsap": "^3.12.7",
     "prettier": "^3.5.0",
     "razorpay": "^2.9.5",
