@@ -85,6 +85,11 @@ export const verifyPayment = asyncHandler(async (req, res) => {
       data: ride,
     });
 
+    sendMessagetoSocketId(ride.user._id, {
+      event: "payment-verified",
+      data: ride,
+    });
+
     getIO().emit("payment-verified", ride);
 
     res

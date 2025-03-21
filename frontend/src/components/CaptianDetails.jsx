@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {useSelector} from 'react-redux'
 import axios from 'axios'
 
-function CaptianDetails(props) {
+function CaptianDetails() {
     const captian = useSelector(state => state.captian.captianData);
     const {messages} = useSelector(state => state.socket);
     const [earnings, setEarnings] = useState(0);
+    const [progress, setProgress] = useState(0);
     const rideId = messages[0]?._id;
+    const progressRef = useRef();
 
     const rideHistory = async() => {
         if (!rideId) return;
@@ -26,11 +28,36 @@ function CaptianDetails(props) {
         }
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (messages[0]?._id) {
             rideHistory();
         }
     }, [messages]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/captian/captian-points`, {withCredentials: true});
+                if(response.status === 200) {
+                    setProgress(response.data.data.points)
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        })();
+    }, []);
+
+    if (progressRef.current) {
+        if(progress >= 80) {
+            progressRef.current.className = 'text-green-500 font-semibold';
+        } else if(progress >= 50 && progress < 80) {
+            progressRef.current.className = 'text-orange-500 font-semibold';
+        } else if (progress >= 30 && progress < 50) {
+            progressRef.current.className = 'text-yellow-500 font-semibold';
+        } else if (progress >= 0 && progress < 30) {
+            progressRef.current.className = 'text-red-500 font-semibold';
+        }
+    }
 
     return (
         <div>
@@ -45,6 +72,10 @@ function CaptianDetails(props) {
                         <h2 className='font-semibold text-sm'>₹{Math.floor(earnings)}</h2>
                         <h4 className='text-xs text-gray-500'>Earned</h4>
                     </div>
+                </div>
+                <div className='bg-gray-100 flex justify-around mt-8 py-3 rounded'>
+                    <h2 className='font-semibold'>Progress points</h2>
+                    <h5 ref={progressRef} className='font-medium'>{progress}</h5>
                 </div>
                 <div className='bg-gray-100 flex justify-evenly mt-8 py-3 rounded'>
                     <div>

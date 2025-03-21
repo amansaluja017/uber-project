@@ -214,6 +214,36 @@ export const endRide = asyncHandler(async (req, res) => {
   }
 });
 
+export const rideRating = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ApiError(
+      400,
+      errors.array().map((err) => err.msg)
+    );
+  }
+
+  const { rideId, rating } = req.body;
+
+  try {
+    const ride = await Ride.findByIdAndUpdate(
+      { _id: rideId },
+      { rating },
+      { new: true }
+    ).select("+rating");
+    if (!ride) {
+      throw new ApiError(404, "ride not found");
+    }
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, ride, "ride rating updated successfully"));
+  } catch (e) {
+    console.error(e);
+    throw new ApiError(500, "internal error");
+  }
+});
+
 export const cancelRide = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -230,7 +260,7 @@ export const cancelRide = asyncHandler(async (req, res) => {
   }
 
   try {
-    const cancelRide = await CancelTheRide({rideId});
+    const cancelRide = await CancelTheRide({ rideId });
     if (!cancelRide) {
       throw new ApiError(404, "ride not found or already cancelled");
     }
@@ -246,6 +276,5 @@ export const cancelRide = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error(error);
     throw new ApiError(500, "internal error");
-    
   }
-})
+});

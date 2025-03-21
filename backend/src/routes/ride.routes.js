@@ -7,6 +7,7 @@ import {
   createRide,
   endRide,
   getPrice,
+  rideRating,
   startRide,
 } from "../controllers/ride.controller.js";
 
@@ -82,6 +83,17 @@ router
       .isLength({ min: 1 })
       .isMongoId()
       .withMessage("Invalid ride id")
+  );
+
+router
+  .route("/ride-rating")
+  .post(
+    rideRating,
+    body("rideId")
+      .isLength({ min: 1 })
+      .isMongoId()
+      .withMessage("Invalid ride id"),
+    body("rating").isNumeric().withMessage("Invalid rating")
   );
 
 export default router;

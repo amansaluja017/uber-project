@@ -144,26 +144,63 @@ export const logoutCaptian = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, captian, "logged out successfully"));
 });
 
-export const rideHistory = asyncHandler(async(req, res) => {
-  const {rideId} = req.query;
-  console.log(rideId)
+export const rideHistory = asyncHandler(async (req, res) => {
+  const { rideId } = req.query;
+  console.log(rideId);
 
-  if(!rideId) {
-    throw new ApiError(400, "Invalid ride id")
+  if (!rideId) {
+    throw new ApiError(400, "Invalid ride id");
   }
 
   const ride = await Ride.findById(rideId);
-  if(!ride) {
-    throw new ApiError(404, "Ride not found")
+  if (!ride) {
+    throw new ApiError(404, "Ride not found");
   }
 
   const captianId = ride.captian?._id;
 
   const captianRideHistory = await Captian.findByIdAndUpdate(
-    captianId, 
+    captianId,
     { $push: { rideHistory: ride } },
     { new: true }
   ).populate("rideHistory");
 
-  return res.status(200).json(new ApiResponse(200, captianRideHistory?.rideHistory, "Ride history fetched successfully"));
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        captianRideHistory?.rideHistory,
+        "Ride history fetched successfully"
+      )
+    );
+});
+
+export const captianPoints = asyncHandler(async (req, res) => {
+  const captian = await Captian.findById(req.captian?._id)
+    .populate("rideHistory")
+    .select("+rating");
+
+  if (!captian) {
+    throw new ApiError(404, "Captian not found");
+  }
+
+  const rides = captian.rideHistory || [];
+
+  const rating = rides.map((ride) => ride.rating);
+
+  const sumOfRating = rating.reduce((acc, rating) => acc + rating, 0);
+
+  const averageRating = Math.floor(sumOfRating / (rating.length || 1));
+  const points = averageRating * 20;
+
+  const updateRating = await Captian.findByIdAndUpdate(
+    req.captian?._id,
+    { points },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updateRating, "points updated successfully"));
 });

@@ -5,7 +5,7 @@ import CaptianDetails from '../components/CaptianDetails'
 import RidePopup from '../components/RidePopup'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
-import ConfirmPopupRide from '../components/ConfirmPopupRide.jsx'
+import ConfirmPopupRide from '../components/confirmPopupRide.jsx'
 import { useSelector, useDispatch } from 'react-redux'
 import { connectSocket, disconnectSocket, receiveMessage, sendMessage } from '../store/SocketSlice.js'
 import socket from '../services/Socket.service.js'
@@ -39,7 +39,10 @@ function CaptianHome() {
       setOtp(message.otp);
     });
 
-    sendMessage({ userType: 'captian', userId: captian._id });
+    sendMessage({
+          event: "join",
+          data: { userType: "captian", userId: captian._id }
+        });
 
     return () => {
       disconnectSocket(dispatch);

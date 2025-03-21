@@ -40,6 +40,8 @@ function Home() {
   const [vehicleType, setVehicleType] = useState(null);
   const [ride, setRide] = useState(null);
   const [rideCancelPanel, setRideCancelPanel] = useState(false);
+  const [rating, setRating] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState(false);
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
   const find = useRef(null);
@@ -54,8 +56,8 @@ function Home() {
   const user = useSelector((state) => state.user.userData);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { state } = useLocation();
-  const { data } = state || {};
+  let { state } = useLocation();
+  const {payment} = state || {};
 
   const pickup = typeof start === "object" ? start.name : start;
   const destination = typeof end === "object" ? end.name : end;
@@ -63,7 +65,10 @@ function Home() {
   useEffect(() => {
     connectSocket(dispatch);
 
-    sendMessage({ userType: "user", userId: user._id });
+    sendMessage({
+      event: "join",
+      data: { userType: "user", userId: user._id }
+    });
 
     socket.on("ride-confirmed", (message) => {
       setWaitingForDriverPanel(true);
@@ -87,6 +92,7 @@ function Home() {
     });
 
     return () => {
+      socket.off("rideCancelled");
       disconnectSocket(dispatch);
     };
   }, [dispatch]);
@@ -248,6 +254,22 @@ function Home() {
     waitingForDriverPanel,
     rideCancelPanel,
   ]);
+
+  const giveRating = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/v1/rides/ride-rating`,
+        { rideId: payment?.message._id, rating },
+        { withCredentials: true }
+      );
+      if (response.status === 200) {
+        navigate("/home", { state: { ...state, payment: { ...payment, paymentStatus: false } } });
+        setPaymentStatus(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="h-screen">
@@ -447,6 +469,36 @@ function Home() {
       >
         <RideCancel setRideCancelPanel={setRideCancelPanel} />
       </div>
+
+      {payment?.paymentStatus && (
+        <div className="fixed bottom-0 left-0 w-full bg-white p-4 shadow-lg">
+          <h3 className="text-xl font-bold mb-2">Rate Your Experience</h3>
+          <div className="flex justify-center space-x-2 rating">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <input
+                onClick={() => setRating(star)}
+                type="radio"
+                key={star}
+                name="rating-1"
+                className="mask mask-star"
+                aria-label="1 star"
+              />
+            ))}
+          </div>
+          <textarea
+            className="w-full mt-4 p-2 border rounded-md"
+            placeholder="Leave a comment..."
+          ></textarea>
+          <button
+            onClick={() => {
+              giveRating();
+            }}
+            className="w-full mt-4 bg-blue-500 text-white py-2 rounded-md"
+          >
+            Submit
+          </button>
+        </div>
+      )}
     </div>
   );
 }

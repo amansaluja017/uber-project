@@ -56,6 +56,12 @@ const rideSchema = new Schema(
       required: true,
       select: false,
     },
+    rating: {
+      type: Number,
+      default: 4,
+      min: 0,
+      max: 5,
+    },
   },
   { timestamps: true }
 );

@@ -27,6 +27,15 @@ export function initializeSocket(server) {
           socketId: socket.id,
         });
       }
+      io.emit("userType", {...data});
+      const captian = await Captian.findById(userId);
+      const captianLocation = captian?.location;
+
+      io.emit("captianLocation", {captianLocation});
+    });
+
+    socket.on("send-location", (data) => {
+      io.emit("receive-location", {socketId: socket.id, ...data, });
     });
 
     socket.on("update-location-captian", async (data) => {

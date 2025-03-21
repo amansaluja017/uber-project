@@ -1,11 +1,15 @@
 import React, { useEffect, useRef } from 'react';
-import tt from '@tomtom-international/web-sdk-maps';
+import tt, { Marker } from '@tomtom-international/web-sdk-maps';
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
+import socket from "../services/Socket.service";
+import { connectSocket, receiveMessage, sendMessage } from '../store/SocketSlice';
+import { useDispatch } from 'react-redux';
 
 function LiveTracking() {
+  const dispatch = useDispatch();
   const mapContainer = useRef(null);
   const mapInstance = useRef(null);
-  const marker = useRef(null);
+  const userMarker = useRef(null);
   const TOMTOM_API_KEY = import.meta.env.VITE_TOMTOM_API_KEY;
 
   useEffect(() => {
@@ -16,16 +20,35 @@ function LiveTracking() {
       zoom: 14
     });
 
-    // Add marker
-    marker.current = new tt.Marker().setLngLat(mapInstance.current.getCenter()).addTo(mapInstance.current);
+    connectSocket(dispatch);
+
+    socket.on("receive-location", (message) => {
+      const { latitude, longitude } = message;
+      mapInstance.current.setCenter([longitude, latitude]);
+      if (userMarker.current) {
+        userMarker.current.setLngLat([longitude, latitude]);
+      } else {
+        userMarker.current = new tt.Marker({ color: "blue" })
+        .setLngLat([longitude, latitude])
+        .addTo(mapInstance.current);
+      }
+    });
 
     // Function to update position
     const updatePosition = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          marker.current.setLngLat([longitude, latitude]);
-          mapInstance.current.setCenter([longitude, latitude]);
+          sendMessage({
+            event: "send-location",
+            data: {latitude, longitude}
+          });
+          if (userMarker.current) {
+            userMarker.current.setLngLat([longitude, latitude]);
+          }
+          if (mapInstance.current) {
+            mapInstance.current.setCenter([longitude, latitude]);
+          }
         },
         (error) => {
           console.error('Error obtaining location', error);
@@ -42,6 +65,7 @@ function LiveTracking() {
 
     return () => {
       clearInterval(intervalId);
+      socket.off("receive-location");
       if (mapInstance.current) {
         mapInstance.current.remove();
       }

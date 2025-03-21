@@ -1051,3 +1051,125 @@ On success, the endpoint returns a JSON response with status code 200 OK includi
       "message": "Error fetching ride history"
   }
 ```
+
+## Captain Points API Endpoint Documentation
+
+### Endpoint: `/api/v1/captian/captian-points`
+
+#### Description
+This endpoint calculates and retrieves a captain's points based on their ride ratings. Points are calculated as 20 points per average rating point.
+
+#### HTTP Method
+`GET`
+
+#### Authentication
+This endpoint is protected by JWT authentication. A valid captain token must be provided.
+
+#### Successful Response
+```json
+{
+    "status": 200,
+    "data": {
+        "_id": "captain_id",
+        "firstName": "Mike",
+        "points": 80,
+        "rideHistory": [
+            // Array of ride objects with ratings
+        ]
+    },
+    "message": "points updated successfully"
+}
+```
+
+#### Error Responses
+
+- **401 Unauthorized:**  
+```json
+{
+    "status": 401,
+    "message": "Unauthorized access"
+}
+```
+
+- **404 Not Found:**  
+```json
+{
+    "status": 404,
+    "message": "Captian not found"
+}
+```
+
+- **500 Internal Server Error:**  
+```json
+{
+    "status": 500,
+    "message": "Error updating points"
+}
+```
+
+## Ride Rating API Endpoint Documentation
+
+### Endpoint: `/api/v1/rides/ride-rating`
+
+#### Description
+This endpoint allows users to submit a rating for a completed ride.
+
+#### HTTP Method
+`POST`
+
+#### Request Body
+The request should be in JSON format containing:
+
+- **rideId** (string, required):  
+  MongoDB ID of the ride to be rated
+- **rating** (number, required):  
+  Rating value between 0 and 5
+
+#### Example Request
+```json
+{
+    "rideId": "65bf12345678901234567890",
+    "rating": 4.5
+}
+```
+
+#### Successful Response
+```json
+{
+    "status": 200,
+    "data": {
+        "_id": "65bf12345678901234567890",
+        "rating": 4.5,
+        "user": "user_id",
+        "captain": "captain_id",
+        // other ride details
+    },
+    "message": "ride rating updated successfully"
+}
+```
+
+#### Error Responses
+
+- **400 Bad Request:**  
+```json
+{
+    "status": 400,
+    "message": "Invalid ride id or rating value"
+}
+```
+
+- **404 Not Found:**  
+```json
+{
+    "status": 404,
+    "message": "ride not found"
+}
+```
+
+- **500 Internal Server Error:**  
+```json
+{
+    "status": 500,
+    "message": "internal error"
+}
+```

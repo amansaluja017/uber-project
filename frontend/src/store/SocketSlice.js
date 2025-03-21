@@ -62,5 +62,5 @@ export const disconnectSocket = (dispatch) => {
 };
 
 export const sendMessage = (message) => {
-  socket.emit("join", message);
+  socket.emit(message.event, message.data);
 };
