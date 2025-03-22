@@ -1,11 +1,8 @@
-import React, { useEffect } from 'react'
-import { WelcomeComponent } from '../components/index'
+import React, { useEffect } from "react";
+import { WelcomeComponent } from "../components/index";
 
 function Weclcome() {
-
-  return (
-    <WelcomeComponent />
-  )
+  return <WelcomeComponent />;
 }
 
-export default Weclcome
+export default Weclcome;

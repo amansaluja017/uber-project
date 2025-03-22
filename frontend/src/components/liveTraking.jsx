@@ -1,9 +1,13 @@
-import React, { useEffect, useRef } from 'react';
-import tt, { Marker } from '@tomtom-international/web-sdk-maps';
-import '@tomtom-international/web-sdk-maps/dist/maps.css';
+import React, { useEffect, useRef } from "react";
+import tt, { Marker } from "@tomtom-international/web-sdk-maps";
+import "@tomtom-international/web-sdk-maps/dist/maps.css";
 import socket from "../services/Socket.service";
-import { connectSocket, receiveMessage, sendMessage } from '../store/SocketSlice';
-import { useDispatch } from 'react-redux';
+import {
+  connectSocket,
+  receiveMessage,
+  sendMessage,
+} from "../store/SocketSlice";
+import { useDispatch } from "react-redux";
 
 function LiveTracking() {
   const dispatch = useDispatch();
@@ -16,8 +20,8 @@ function LiveTracking() {
     mapInstance.current = tt.map({
       key: TOMTOM_API_KEY,
       container: mapContainer.current,
-      center: [77.5946, 12.9716], 
-      zoom: 14
+      center: [77.5946, 12.9716],
+      zoom: 14,
     });
 
     connectSocket(dispatch);
@@ -29,8 +33,8 @@ function LiveTracking() {
         userMarker.current.setLngLat([longitude, latitude]);
       } else {
         userMarker.current = new tt.Marker({ color: "blue" })
-        .setLngLat([longitude, latitude])
-        .addTo(mapInstance.current);
+          .setLngLat([longitude, latitude])
+          .addTo(mapInstance.current);
       }
     });
 
@@ -41,7 +45,7 @@ function LiveTracking() {
           const { latitude, longitude } = position.coords;
           sendMessage({
             event: "send-location",
-            data: {latitude, longitude}
+            data: { latitude, longitude },
           });
           if (userMarker.current) {
             userMarker.current.setLngLat([longitude, latitude]);
@@ -51,7 +55,7 @@ function LiveTracking() {
           }
         },
         (error) => {
-          console.error('Error obtaining location', error);
+          console.error("Error obtaining location", error);
         },
         { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
       );
@@ -73,8 +77,8 @@ function LiveTracking() {
   }, [TOMTOM_API_KEY]);
 
   return (
-    <div className='h-full'>
-      <div ref={mapContainer} style={{ width: '100%', height: '100%' }}></div>
+    <div className="h-full">
+      <div ref={mapContainer} style={{ width: "100%", height: "100%" }}></div>
     </div>
   );
 }

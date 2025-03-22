@@ -24,6 +24,7 @@ import socket from "../services/Socket.service.js";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import LiveTracking from "../components/liveTraking.jsx";
 import RideCancel from "../components/RideCancel.jsx";
+import UserChat from "../components/UserChat.jsx";
 
 function Home() {
   const [openPanel, setOpenPanel] = useState(false);
@@ -40,6 +41,7 @@ function Home() {
   const [vehicleType, setVehicleType] = useState(null);
   const [ride, setRide] = useState(null);
   const [rideCancelPanel, setRideCancelPanel] = useState(false);
+  const [userChatPanel, setUserChatPanel] = useState(false);
   const [rating, setRating] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState(false);
   const panelRef = useRef(null);
@@ -52,12 +54,13 @@ function Home() {
   const inputRef = useRef(null);
   const suggestionRef = useRef(null);
   const rideCancelPanelRef = useRef(null);
+  const userChatPanelRef = useRef(null);
 
   const user = useSelector((state) => state.user.userData);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   let { state } = useLocation();
-  const {payment} = state || {};
+  const { payment } = state || {};
 
   const pickup = typeof start === "object" ? start.name : start;
   const destination = typeof end === "object" ? end.name : end;
@@ -67,7 +70,7 @@ function Home() {
 
     sendMessage({
       event: "join",
-      data: { userType: "user", userId: user._id }
+      data: { userType: "user", userId: user._id },
     });
 
     socket.on("ride-confirmed", (message) => {
@@ -246,6 +249,15 @@ function Home() {
         transform: "translateY(100%)",
       });
     }
+    if (userChatPanel) {
+      gsap.to(userChatPanelRef.current, {
+        transform: "translateY(0)",
+      });
+    } else {
+      gsap.to(userChatPanelRef.current, {
+        transform: "translateY(100%)",
+      });
+    }
   }, [
     openPanel,
     vehiclePanel,
@@ -253,6 +265,7 @@ function Home() {
     lookingDriverPanel,
     waitingForDriverPanel,
     rideCancelPanel,
+    userChatPanel,
   ]);
 
   const giveRating = async () => {
@@ -263,7 +276,9 @@ function Home() {
         { withCredentials: true }
       );
       if (response.status === 200) {
-        navigate("/home", { state: { ...state, payment: { ...payment, paymentStatus: false } } });
+        navigate("/home", {
+          state: { ...state, payment: { ...payment, paymentStatus: false } },
+        });
         setPaymentStatus(false);
       }
     } catch (error) {
@@ -460,7 +475,15 @@ function Home() {
           end={end}
           fare={fare}
           setWaitingForDriverPanel={setWaitingForDriverPanel}
+          setUserChatPanel={setUserChatPanel}
         />
+      </div>
+
+      <div
+        ref={userChatPanelRef}
+        className="h-screen bg-white flex top-0 fixed flex-col translate-y-full  w-full p-4 z-40"
+      >
+        <UserChat ride={ride} setUserChatPanel={setUserChatPanel} />
       </div>
 
       <div

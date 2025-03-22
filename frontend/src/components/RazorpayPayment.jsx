@@ -101,7 +101,9 @@ const RazorpayPayment = () => {
     connectSocket(dispatch);
 
     socket.on("payment-verified", (message) => {
-      navigate("/home", { state: { payment: { message, paymentStatus: true } } });
+      navigate("/home", {
+        state: { payment: { message, paymentStatus: true } },
+      });
     });
 
     return () => {

@@ -27,11 +27,6 @@ export function initializeSocket(server) {
           socketId: socket.id,
         });
       }
-      io.emit("userType", {...data});
-      const captian = await Captian.findById(userId);
-      const captianLocation = captian?.location;
-
-      io.emit("captianLocation", {captianLocation});
     });
 
     socket.on("send-location", (data) => {
@@ -52,6 +47,29 @@ export function initializeSocket(server) {
         },
       });
     });
+
+    socket.on("user-chat", (data) => {
+
+      if(io) {
+        io.emit("user-message", {
+          message: data.message,
+        });
+      } else {
+        console.log("Socket.io server is not initialized");
+      }
+    });
+
+    socket.on("captian-chat", (data) => {
+      if(io) {
+        console.log("message sending")
+        io.emit("captian-message", {
+          message: data.message,
+        });
+      } else {
+        console.log("Socket.io server is not initialized");
+      }
+    });
+    
 
     socket.on("disconnect", () => {
       console.log("Connection closed", socket.id);

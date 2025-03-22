@@ -80,12 +80,12 @@ export const verifyPayment = asyncHandler(async (req, res) => {
       throw new ApiError(500, "Failed to update ride with payment details");
     }
 
-    sendMessagetoSocketId(ride.captian._id, {
+    sendMessagetoSocketId(ride.captian.socketId, {
       event: "payment-verified",
       data: ride,
     });
 
-    sendMessagetoSocketId(ride.user._id, {
+    sendMessagetoSocketId(ride.user.socketId, {
       event: "payment-verified",
       data: ride,
     });
