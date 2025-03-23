@@ -25,6 +25,9 @@ const captianSchema = new Schema(
         message: "Please enter a valid email address",
       },
     },
+    avatar: {
+      type: String,
+    },
     password: {
       type: String,
       required: true,
@@ -94,6 +97,10 @@ const captianSchema = new Schema(
       type: Number,
       default: 0,
     },
+    earnings: {
+      type: Number,
+      default: 0
+    }
   },
   { timestamps: true }
 );

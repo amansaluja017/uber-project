@@ -24,6 +24,7 @@ const rideSchema = new Schema(
     fare: {
       type: Number,
       required: true,
+      default: 0
     },
     status: {
       type: String,

@@ -1,14 +1,13 @@
 import {Captian} from '../src/models/captian.model.js'
 import { ApiError } from '../src/utils/ApiError.js'
 
-export const createCaptian = async function({firstName, lastName, email, password, status, color, plate, capicity, vehicleType}) {
+export const createCaptian = async function({firstName, lastName, email, password, color, plate, capicity, vehicleType}) {
 
     const captian = await Captian.create({
         firstName,
         lastName,
         email,
         password,
-        status,
         vehicle: {
             color,
             plate,

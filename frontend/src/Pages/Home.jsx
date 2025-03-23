@@ -70,7 +70,7 @@ function Home() {
 
     sendMessage({
       event: "join",
-      data: { userType: "user", userId: user._id },
+      data: { userType: "user", userId: user?._id },
     });
 
     socket.on("ride-confirmed", (message) => {

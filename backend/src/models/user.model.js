@@ -25,6 +25,9 @@ const userSchema = new Schema(
         message: "Please enter a valid email address",
       },
     },
+    avatar: {
+      type: String
+    },
     password: {
       type: String,
       required: true,

@@ -6,14 +6,12 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Captiansignup } from "../store/CaptianAuthSlice.js";
 import axios from "axios";
-import { useId } from "react";
 
 function CaptianSignup() {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const statusId = useId();
 
   const submit = async (data) => {
     setError("");
@@ -138,22 +136,6 @@ function CaptianSignup() {
                 <option value="car">Car</option>
                 <option value="auto">Auto</option>
                 <option value="moterbike">Motorbike</option>
-              </select>
-            </div>
-
-            <div className="mt-3 flex flex-col">
-              <label htmlFor="" className="font-medium text-base relative">
-                Status
-              </label>
-              <select
-                defaultValue="Select one"
-                className="bg-gray-200 h-9 b rounded"
-                name="status"
-                id={statusId}
-                {...register("status", { required: true })}
-              >
-                <option value="active">active</option>
-                <option value="inactive">inactive</option>
               </select>
             </div>
           </div>

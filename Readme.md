@@ -107,6 +107,65 @@ npm run dev
 - POST `/api/payments/create-order` - Create payment order
 - POST `/api/payments/verify` - Verify payment
 
+## New Features
+
+### Captain Rating & Points System
+- Rating system for drivers (1-5 stars)
+- Points calculation based on average ratings (20 points per rating star)
+- Progress indicators with color coding:
+  - Green: 80+ points
+  - Orange: 50-79 points
+  - Yellow: 30-49 points
+  - Red: 0-29 points
+
+### Captain Dashboard
+- Real-time earnings tracking
+- Ride history management
+- Active/Inactive status toggle
+- Performance metrics display
+
+### Enhanced Ride Management
+- OTP verification for ride start
+- Real-time chat between user and captain
+- Detailed ride information panels
+- Ride cancellation with notifications
+
+### Payment Enhancements
+- Integrated Razorpay payment flow
+- Payment status tracking
+- Success/failure notifications
+- Automatic earnings calculation
+
+### Real-time Features
+- Live location tracking
+- Instant ride status updates
+- Distance calculation
+- ETA updates
+
+### User Experience Improvements
+- Animated panels using GSAP
+- Responsive design for all screens
+- Improved map integration
+- Better error handling and feedback
+
+## Additional API Endpoints
+
+### Captain Management
+- GET `/api/v1/captian/captian-points` - Get captain's rating points
+- GET `/api/v1/captian/captian-earnings` - Get captain's total earnings
+- GET `/api/v1/captian/rideHistory` - Get captain's ride history
+- POST `/api/v1/captian/update-status` - Update captain's availability status
+
+### Ride Rating
+- POST `/api/v1/rides/ride-rating` - Submit ride rating
+- GET `/api/v1/rides/get-rating` - Get ride rating
+
+### Socket Events
+- `receive-location` - Real-time location updates
+- `rideEnded` - Ride completion notification
+- `payment-verified` - Payment confirmation
+- `rideCancelled` - Ride cancellation notification
+
 ## Contributing
 
 1. Fork the repository

@@ -9,6 +9,22 @@ function CaptianDetails() {
   const [progress, setProgress] = useState(0);
   const rideId = messages[0]?._id;
   const progressRef = useRef();
+  const statusRef = useRef();
+  
+  const updateStatus = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/v1/captian/update-status`,
+        { status: statusRef.current?.checked ? "active" : "inactive" },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("Status updated:", response.data);
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
 
   const rideHistory = async () => {
     if (!rideId) return;
@@ -17,19 +33,27 @@ function CaptianDetails() {
         `${import.meta.env.VITE_BASE_URL}/api/v1/captian/rideHistory`,
         {
           params: {
-            rideId: rideId,
+            rideId,
           },
         }
       );
-      const rides = response.data.data;
-      const earnings = rides.reduce((acc, ride) => acc + ride.fare, 0);
-
-      setEarnings(earnings);
-      return earnings;
+      console.log(response);
     } catch (error) {
       console.error("Error fetching ride history:", error);
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/v1/captian/captian-earnings`,
+        { withCredentials: true }
+      );
+      if (response.status === 200) {
+        setEarnings(response.data.data);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     if (messages[0]?._id) {
@@ -79,7 +103,7 @@ function CaptianDetails() {
           </div>
 
           <div className="text-start">
-            <h2 className="font-semibold text-sm">₹{Math.floor(earnings)}</h2>
+            <h2 className="font-semibold text-sm">₹{earnings}</h2>
             <h4 className="text-xs text-gray-500">Earned</h4>
           </div>
         </div>
@@ -89,25 +113,20 @@ function CaptianDetails() {
             {progress}
           </h5>
         </div>
-        <div className="bg-gray-100 flex justify-evenly mt-8 py-3 rounded">
-          <div>
-            <div className="flex flex-col justify-center items-center">
-              <i className="font-medium text-xl ri-time-line"></i>
-              <h5 className="text-sm font-semibold">10.2</h5>
-              <h5 className="text-xs text-gray-600">Hour's online</h5>
+        <div className="bg-gray-100 flex items-center mt-8 py-3 rounded">
+          <div className="ml-4 w-full flex justify-start">
+            <h3 className="text-lg font-semibold">Status</h3>
+            <div className="w-full flex justify-end items-center mr-4">
+              <input
+                onChange={() => {
+                    updateStatus();
+                }}
+                ref={statusRef}
+                type="checkbox"
+                defaultChecked
+                className="toggle toggle-primary"
+              />
             </div>
-          </div>
-          <div>
-            <div className="flex flex-col justify-center items-center">
-              <i className="font-medium text-xl ri-timer-2-line"></i>
-              <h5 className="text-sm font-semibold">10.2</h5>
-              <h5 className="text-xs text-gray-600">Hour's online</h5>
-            </div>
-          </div>
-          <div className="flex flex-col justify-center items-center">
-            <i className="font-medium text-xl ri-booklet-line"></i>
-            <h5 className="text-sm font-semibold">10.2</h5>
-            <h5 className="text-xs text-gray-600">Hour's online</h5>
           </div>
         </div>
       </div>

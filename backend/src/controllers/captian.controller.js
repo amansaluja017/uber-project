@@ -37,10 +37,10 @@ export const registercaptian = asyncHandler(async (req, res) => {
     );
   }
 
-  const { firstName, lastName, email, password, vehicle, location, status } =
+  const { firstName, lastName, email, password, vehicle, location } =
     req.body;
 
-  if (!firstName || !email || !password || !vehicle || !status) {
+  if (!firstName || !email || !password || !vehicle) {
     throw new ApiError(400, "All fields are required");
   }
 
@@ -60,7 +60,6 @@ export const registercaptian = asyncHandler(async (req, res) => {
     capicity: vehicle.capicity,
     plate: vehicle.plate,
     location,
-    status,
   });
 
   return res
@@ -113,6 +112,31 @@ export const logincaptian = asyncHandler(async (req, res) => {
     );
 });
 
+export const updateStatus = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  console.log(status)
+
+  if (!status) {
+    throw new ApiError(400, "Status is required");
+  }
+
+  const captian = await Captian.findByIdAndUpdate(
+    req.captian._id,
+    {
+      $set: {
+        status,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, captian.status, "Captain status updated successfully"));
+});
+
 export const captainProfile = asyncHandler(async (req, res) => {
   return res
     .status(200)
@@ -146,7 +170,6 @@ export const logoutCaptian = asyncHandler(async (req, res) => {
 
 export const rideHistory = asyncHandler(async (req, res) => {
   const { rideId } = req.query;
-  console.log(rideId);
 
   if (!rideId) {
     throw new ApiError(400, "Invalid ride id");
@@ -159,21 +182,68 @@ export const rideHistory = asyncHandler(async (req, res) => {
 
   const captianId = ride.captian?._id;
 
-  const captianRideHistory = await Captian.findByIdAndUpdate(
-    captianId,
-    { $push: { rideHistory: ride } },
+  const captian = await Captian.findById(captianId).populate("rideHistory");
+
+  const rideHistory = captian.rideHistory;
+
+  if (!rideHistory.some(r => r._id.toString() === rideId)) {
+    const captianRideHistory = await Captian.findByIdAndUpdate(
+      captianId,
+      { $push: { rideHistory: ride } },
+      { new: true }
+    ).populate("rideHistory");
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          captianRideHistory?.rideHistory,
+          "Ride history fetched successfully"
+        )
+      );
+  } else {
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          rideHistory,
+          "Ride already exists in history"
+        )
+      );
+  }
+});
+
+export const captianEarnings = asyncHandler(async (req, res) => {
+  const captian = await Captian.findById(req.captian?._id)
+    .populate("rideHistory");
+
+  if (!captian) {
+    throw new ApiError(404, "Captian not found");
+  }
+
+  const rides = captian.rideHistory || [];
+
+  const rating = rides
+    .map((ride) => {
+      if (ride.status === "completed" && ride.fare !== undefined) {
+        return ride.fare;
+      }
+    })
+    .filter((fare) => fare !== undefined);
+
+  const earnings = Math.floor(rating.reduce((acc, fare) => acc + fare, 0));
+
+  const updateEarning = await Captian.findByIdAndUpdate(
+    req.captian?._id,
+    { earnings },
     { new: true }
-  ).populate("rideHistory");
+  );
 
   return res
     .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        captianRideHistory?.rideHistory,
-        "Ride history fetched successfully"
-      )
-    );
+    .json(new ApiResponse(200, updateEarning?.earnings, "earning updated successfully"));
 });
 
 export const captianPoints = asyncHandler(async (req, res) => {
