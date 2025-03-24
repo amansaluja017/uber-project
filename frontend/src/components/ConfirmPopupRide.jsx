@@ -15,6 +15,7 @@ function ConfirmPopupRide(props) {
 
   const userFirstName = props.ride?.user.firstName;
   const userLastName = props.ride?.user.lastName;
+  const userAvatar = props.ride?.user.avatar;
   const payment = props.ride?.fare;
   const totalFare = (payment * (1 - 0.3)).toFixed(2);
 
@@ -62,8 +63,8 @@ function ConfirmPopupRide(props) {
         <div className="flex justify-between mt-20 bg-yellow-300 py-4 w-full rounded-xl">
           <div className="flex justify-center items-center gap-2 px-2">
             <img
-              className="h-10 w-10 object-contain rounded-full"
-              src="https://img.freepik.com/free-vector/smiling-young-man-illustration_1308-174669.jpg"
+              className="h-10 w-10 rounded-full object-cover"
+              src={userAvatar}
               alt="avatar"
             />
             <h3 className="font-semibold">{`${userFirstName} ${userLastName}`}</h3>

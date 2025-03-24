@@ -11,12 +11,18 @@ import {
   updateStatus,
 } from "../controllers/captian.controller.js";
 import { verifyJWTCaptian } from "../middlewares/auth.middleware.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 const router = express.Router();
 
 router
   .route("/register")
-  .post(registercaptian, [
+  .post(upload.fields([
+    {
+      name: "avatar",
+      maxCount: 1,
+    }
+  ]) , registercaptian, [
     body("firstName").notEmpty().withMessage("firstName is required"),
     body("email").isEmail().withMessage("email is required"),
     body("password")

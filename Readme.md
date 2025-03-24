@@ -55,6 +55,13 @@ ROZARPAY_TEST_API_KEY=your_razorpay_key
 ROZARPAY_TEST_API_KEY_SECRET=your_razorpay_secret
 ```
 
+### Frontend
+```env
+VITE_TOMTOM_API_KEY=your_tomtom_api_key
+VITE_ROZARPAY_TEST_API_KEY=your_razorpay_key
+VITE_BASE_URL=your_api_base_url
+```
+
 ## Installation
 
 1. Clone the repository
@@ -148,6 +155,101 @@ npm run dev
 - Improved map integration
 - Better error handling and feedback
 
+## New Features & Enhancements
+
+### Real-time Chat System
+- Integrated chat system between users and captains
+- Real-time message delivery using Socket.io
+- Chat history preservation during active rides
+- Unread message notifications
+- User-friendly chat interface with timestamps
+
+### Enhanced Captain Profile System
+- Dynamic rating display (0-5 stars)
+- Progress points system with visual indicators
+  - Green (80+ points): Excellent performance
+  - Orange (50-79 points): Good performance
+  - Yellow (30-49 points): Average performance
+  - Red (0-29 points): Needs improvement
+- Real-time earnings tracker
+- Status toggle for availability (active/inactive)
+- Detailed ride history with earnings breakdown
+
+### Advanced Ride Management
+- OTP verification system for ride initiation
+- Step-by-step ride progress tracking
+- Multiple ride panels:
+  - Ride confirmation panel
+  - Looking for driver panel
+  - Active ride panel
+  - Payment panel
+- GSAP animations for smooth transitions between panels
+
+### Enhanced Payment System
+- Seamless Razorpay integration
+- Multiple payment method support
+- Real-time payment status updates
+- Payment verification system
+- Automatic earnings calculation for captains
+- Payment success/failure notifications
+
+### Location & Navigation Improvements
+- Real-time location tracking using TomTom Maps
+- Dynamic route calculation
+- Distance and ETA updates
+- Fare calculation based on:
+  - Distance
+  - Vehicle type
+  - Time of day
+  - Demand factors
+
+### UI/UX Improvements
+- Responsive design for all screen sizes
+- Animated transitions using GSAP
+- Sliding panels for information display
+- Toast notifications for important updates
+- Loading indicators for async operations
+- Error handling with user-friendly messages
+
+### Vehicle Management
+- Support for multiple vehicle types:
+  - Cars
+  - Auto-rickshaws
+  - Motorbikes
+- Vehicle-specific fare calculation
+- Capacity management
+- Vehicle details verification
+
+### Socket Events Documentation
+```javascript
+// User events
+socket.on("receive-location", (coordinates) => {
+  // Real-time location updates
+});
+
+socket.on("rideEnded", (rideDetails) => {
+  // Ride completion handling
+});
+
+// Captain events
+socket.on("ride-request", (rideDetails) => {
+  // New ride request handling
+});
+
+socket.on("payment-verified", (paymentDetails) => {
+  // Payment confirmation handling
+});
+
+// Chat events
+socket.on("user-message", (message) => {
+  // Handle user messages
+});
+
+socket.on("captain-message", (message) => {
+  // Handle captain messages
+});
+```
+
 ## Additional API Endpoints
 
 ### Captain Management
@@ -165,6 +267,16 @@ npm run dev
 - `rideEnded` - Ride completion notification
 - `payment-verified` - Payment confirmation
 - `rideCancelled` - Ride cancellation notification
+
+## Upcoming Features
+- Multi-language support
+- Dark mode
+- Ride scheduling
+- Favorite locations
+- Ride sharing
+- Advanced analytics dashboard
+- Driver performance metrics
+- Customer loyalty program
 
 ## Contributing
 

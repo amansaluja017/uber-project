@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import { Input, Button } from "../components/index";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -8,6 +8,7 @@ import { Captiansignup } from "../store/CaptianAuthSlice.js";
 import axios from "axios";
 
 function CaptianSignup() {
+  const avatarId = useId();
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -16,13 +17,31 @@ function CaptianSignup() {
   const submit = async (data) => {
     setError("");
     try {
+      const formData = new FormData();
+      Object.keys(data).forEach((key) => {
+        if (key === "avatar") {
+          formData.append(key, data[key][0]);
+        } else if (key === "vehicle") {
+          Object.entries(data[key]).forEach(([vehicleKey, vehicleValue]) => {
+            formData.append(vehicleKey, vehicleValue);
+          });
+        } else {
+          formData.append(key, data[key]);
+        }
+      });
+
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/v1/captian/register`,
-        data,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
         { withCredentials: true }
       );
       if (response.status === 201) {
-        dispatch(Captiansignup(data));
+        dispatch(Captiansignup(...formData));
         localStorage.setItem("token", response.data.data.accessToken);
         navigate("/captian-login");
       }
@@ -138,6 +157,17 @@ function CaptianSignup() {
                 <option value="moterbike">Motorbike</option>
               </select>
             </div>
+          </div>
+          <div className="mt-3 flex flex-col">
+            <label htmlFor={avatarId} className="font-medium text-base">
+              Avatar
+            </label>
+            <input
+              id={avatarId}
+              type="file"
+              className="file-input bg-gray-200"
+              {...register("avatar")}
+            />
           </div>
           {error && <p className="text-red-700 text-sm font-mono">{error}</p>}
           <div>

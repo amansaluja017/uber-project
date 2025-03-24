@@ -6,6 +6,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { validationResult } from "express-validator";
 import { Token } from "../models/blacklistToken.model.js";
 import { Ride } from "../models/ride.model.js";
+import { uploadImage } from "../utils/cloudinary.js";
+import fs from "fs";
 
 export const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -37,14 +39,29 @@ export const registercaptian = asyncHandler(async (req, res) => {
     );
   }
 
-  const { firstName, lastName, email, password, vehicle, location } =
+  const { firstName, lastName, email, password, color, vehicleType, plate,
+    capicity, location } =
     req.body;
 
-  if (!firstName || !email || !password || !vehicle) {
+  if (!firstName || !email || !password || !vehicleType || !plate || !color || !capicity) {
     throw new ApiError(400, "All fields are required");
   }
 
+  const captianAvatarPath = req.files?.avatar[0].path;
+
+  if (!captianAvatarPath) {
+    fs.unlinkSync(captianAvatarPath);
+    throw new ApiError(400, "Failed to upload avatar");
+  }
+
+  const avatar = await uploadImage(captianAvatarPath);
+
   const existedcaptian = await Captian.findOne({ email });
+
+  if (existedcaptian) {
+    fs.unlinkSync(captianAvatarPath);
+    throw new ApiError(400, "Email already exists");
+  }
 
   if (existedcaptian) {
     throw new ApiError(400, "Email already exists");
@@ -55,11 +72,12 @@ export const registercaptian = asyncHandler(async (req, res) => {
     lastName,
     email,
     password,
-    color: vehicle.color,
-    vehicleType: vehicle.vehicleType,
-    capicity: vehicle.capicity,
-    plate: vehicle.plate,
+    color,
+    vehicleType,
+    capicity,
+    plate,
     location,
+    avatar
   });
 
   return res
@@ -184,7 +202,7 @@ export const rideHistory = asyncHandler(async (req, res) => {
 
   const captian = await Captian.findById(captianId).populate("rideHistory");
 
-  const rideHistory = captian.rideHistory;
+  const rideHistory = captian?.rideHistory;
 
   if (!rideHistory.some(r => r._id.toString() === rideId)) {
     const captianRideHistory = await Captian.findByIdAndUpdate(
@@ -257,7 +275,13 @@ export const captianPoints = asyncHandler(async (req, res) => {
 
   const rides = captian.rideHistory || [];
 
-  const rating = rides.map((ride) => ride.rating);
+  const rating = rides
+  .map((ride) => {
+    if (ride.status === "completed" && ride.rating !== undefined) {
+      return ride.rating;
+    }
+  })
+  .filter((rating) => rating !== undefined);
 
   const sumOfRating = rating.reduce((acc, rating) => acc + rating, 0);
 

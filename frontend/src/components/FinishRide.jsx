@@ -12,8 +12,8 @@ function FinishRide(props) {
         <div className="flex justify-between mt-10 bg-yellow-300 py-4 w-full rounded-xl">
           <div className="flex justify-center items-center gap-2 px-2">
             <img
-              className="h-10 w-10 object-contain rounded-full"
-              src="https://img.freepik.com/free-vector/smiling-young-man-illustration_1308-174669.jpg"
+              className="h-10 w-10 object-cover rounded-full"
+              src={props.rideData?.user?.avatar}
               alt="avatar"
             />
             <h3 className="font-semibold">

@@ -7,12 +7,18 @@ import {
 } from "../controllers/user.controller.js";
 import { body } from "express-validator";
 import express from "express";
+import { upload } from "../middlewares/multer.middleware.js";
 
 const router = express.Router();
 
 router
   .route("/register")
-  .post(registerUser, [
+  .post(upload.fields([
+    {
+      name: "avatar",
+      maxCount: 1,
+    }
+  ]), registerUser, [
     body("firstName")
       .isLength({ min: 3 })
       .withMessage("first name must be at least 3 characters"),

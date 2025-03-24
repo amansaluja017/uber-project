@@ -85,7 +85,7 @@ function CaptianChat(props) {
       <div className="flex items-center p-4 bg-white shadow-sm">
         <img
           className="h-12 w-12 object-cover rounded-full"
-          src="https://img.freepik.com/free-vector/smiling-young-man-illustration_1308-174669.jpg"
+          src={props.ride?.user?.avatar}
           alt="avatar"
         />
         <div className="ml-4">

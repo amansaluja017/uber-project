@@ -5,7 +5,7 @@ import CaptianDetails from "../components/CaptianDetails";
 import RidePopup from "../components/RidePopup";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import ConfirmPopupRide from "../components/confirmPopupRide.jsx";
+import ConfirmPopupRide from "../components/ConfirmPopupRide.jsx";
 import { useSelector, useDispatch } from "react-redux";
 import {
   connectSocket,
@@ -146,7 +146,7 @@ function CaptianHome() {
       <div className="h-3/5">
         <LiveTracking />
       </div>
-      <div className="h-2/5 p-5">
+      <div className="h-2/5 p-5 relative z-10 bg-white flex flex-col justify-center">
         <CaptianDetails ride={ride} />
       </div>
 

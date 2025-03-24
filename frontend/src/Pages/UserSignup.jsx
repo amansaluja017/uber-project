@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import { Input, Button } from "../components/index.js";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -8,6 +8,7 @@ import { Signup } from "../store/UserAuthSlice.js";
 import axios from "axios";
 
 function UserSignup() {
+  const avatarId = useId();
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -16,16 +17,26 @@ function UserSignup() {
   const submit = async (data) => {
     setError("");
     try {
+      const formData = new FormData();
+      Object.keys(data).forEach((key) => {
+        formData.append(key, key === "avatar" ? data[key][0] : data[key]);
+      });
+
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/v1/users/register`,
-        data
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       if (response.status === 200) {
-        dispatch(Signup(data));
+        dispatch(Signup(...formData));
         navigate("/login");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setError("email is not valid or already registered");
     }
   };
@@ -99,6 +110,10 @@ function UserSignup() {
                 },
               })}
             />
+          </div>
+          <div className="mt-3 flex flex-col">
+            <label htmlFor={avatarId} className="font-medium text-base">Avatar</label>
+            <input id={avatarId} type="file" className="file-input bg-gray-200" {...register("avatar")} />
           </div>
           {error && <p className="text-red-700 text-sm font-mono">{error}</p>}
           <div>

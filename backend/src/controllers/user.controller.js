@@ -5,6 +5,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { userCreate } from "../../Services/user.service.js";
 import { validationResult } from "express-validator";
 import { Token } from "../models/blacklistToken.model.js";
+import { uploadImage } from "../utils/cloudinary.js";
+import fs from "fs";
 
 export const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -43,8 +45,22 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   const existedUser = await User.findOne({ email });
 
+  const userAvatarPath = req.files?.avatar[0].path;
+
   if (existedUser) {
+    fs.unlinkSync(userAvatarPath);
     throw new ApiError(400, "Email already exists");
+  }
+
+  if(!userAvatarPath) {
+    fs.unlinkSync(userAvatarPath);
+    throw new ApiError(400, "Failed to upload avatar");
+  }
+
+  const avatar = await uploadImage(userAvatarPath);
+
+  if(!avatar) {
+    throw new ApiError(400, "Failed to upload avatar");
   }
 
   const user = await userCreate({
@@ -52,6 +68,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     lastName,
     email,
     password,
+    avatar
   });
 
   return res.json(new ApiResponse(201, user, "user created successfully"));

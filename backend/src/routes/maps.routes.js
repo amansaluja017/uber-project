@@ -11,7 +11,6 @@ const router = express.Router();
 router
   .route("/get-coordinates/:address")
   .get(
-    verifyJWT,
     getCoodinates,
     query("address").isString().isLength({ min: 3 })
   );

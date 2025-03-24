@@ -90,7 +90,6 @@ const captianSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: "Ride",
-        unique: true,
       },
     ],
     points: {

@@ -1,4 +1,4 @@
-import { v2 as Cloudinary } from "./cloudinary";
+import { v2 as Cloudinary } from "cloudinary";
 import fs from "fs";
 
 Cloudinary.config({
@@ -14,8 +14,8 @@ export const uploadImage = async (localFilePath) => {
     const upload = await Cloudinary.uploader.upload(localFilePath, {
       resourceType: "image",
     });
-    console.log("Image uploaded successfully", upload.secure_url);
     fs.unlinkSync(localFilePath);
+    return upload.secure_url;
   } catch (error) {
     fs.unlinkSync(localFilePath);
     console.error("failed to upload", error);
@@ -26,7 +26,7 @@ export const deleteImage = async (public_id) => {
   if (!localFilePath) return null;
 
   try {
-    await Cloudinary.uploader.distroy(public_id);
+    await Cloudinary.uploader.destroy(public_id);
   } catch (error) {
     console.error("failed to delete", error);
   }
